@@ -492,23 +492,32 @@
   .depoimento blockquote { margin: 0; color: var(--texto-suave); font-size: .98rem; line-height: 1.55; }
 
   /* ===== 7. CONTATO ===== */
-  .contato-caixa {
-    background: var(--branco); border-radius: 32px; border: 1px solid var(--borda); box-shadow: var(--sombra-forte);
-    display: grid; grid-template-columns: .95fr 1.05fr; gap: 48px; padding: 56px;
-  }
-  .contato-canais { display: grid; gap: 12px; margin-top: 30px; }
-  .canal {
-    display: flex; align-items: center; gap: 14px; text-decoration: none; background: var(--fundo); border-radius: 16px;
-    padding: 14px 18px; border: 1px solid var(--borda); transition: background .2s ease;
-  }
-  .canal:hover { background: var(--mist-claro); }
-  .canal-icone { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--capri); color: var(--sand); }
-  .canal-icone svg { width: 20px; height: 20px; }
-  .canal b { display: block; font-size: 1rem; }
-  .canal small { color: var(--texto-suave); font-size: .9rem; font-weight: 600; word-break: break-word; }
+  /* O contato e o rodapé formam uma faixa só, de ponta a ponta da página */
+  #contato { background: var(--capri); color: var(--branco); }
+  #contato :focus-visible, .rodape :focus-visible { outline-color: var(--branco); }
+  .contato-caixa { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 56px; align-items: start; }
+  #contato .sub-secao { color: var(--sand); }
+  #contato .rotulo { color: var(--texto); }
+  #contato .grifo::before { background: var(--terra); }
+  .contato-canais { display: grid; gap: 16px; margin-top: 28px; }
+  .canal { display: flex; align-items: center; gap: 14px; text-decoration: none; width: fit-content; max-width: 100%; }
+  .canal:hover small { text-decoration: underline; }
+  .canal-icone { flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; border: 1px solid rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .1); color: var(--branco); }
+  .canal-icone svg { width: 18px; height: 18px; }
+  .canal b { display: block; color: var(--sand); font-size: .68rem; font-weight: 700; letter-spacing: .12em; line-height: 1.5; text-transform: uppercase; }
+  .canal small { display: block; color: var(--branco); font-size: 1rem; font-weight: 700; word-break: break-word; }
   .canal > span:last-child { min-width: 0; }
+  .contato-caixa > div:last-child { padding: 24px; border: 1px solid rgba(255, 255, 255, .35); border-radius: 18px; background: rgba(255, 255, 255, .07); }
+  #contato .campo input, #contato .campo textarea { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .12); color: var(--branco); }
+  #contato .campo textarea::placeholder { color: rgba(255, 255, 255, .85); }
+  #contato .campo input:focus, #contato .campo textarea:focus { border-color: var(--branco); background: var(--branco); color: var(--tinta); box-shadow: 0 0 0 4px var(--mist); }
+  #contato .campo textarea:focus::placeholder { color: var(--texto-suave); }
+  #contato .botao { background: var(--branco); color: var(--tinta); }
+  #contato .botao:hover { background: var(--sand); }
+  #contato .confirmacao { color: var(--tinta); }
 
   .formulario { display: grid; gap: 16px; align-content: start; }
+  .formulario[hidden] { display: none; }
   .campo label { display: block; font-weight: 700; font-size: .92rem; margin-bottom: 6px; }
   .campo input, .campo textarea {
     width: 100%; border: 1.5px solid var(--borda); background: var(--fundo); border-radius: 14px; padding: 14px 16px; font-size: 1rem;
@@ -527,18 +536,15 @@
   .confirmacao p { color: var(--texto-suave); margin-top: 4px; }
 
   /* ===== 8. RODAPÉ ===== */
-  .rodape { padding: 48px 0 40px; }
-  .rodape-barra {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;
-    background: var(--capri); color: var(--branco); border-radius: 26px; padding: 26px 30px;
-  }
+  .rodape { background: var(--capri); color: var(--branco); border-top: 1px solid rgba(255, 255, 255, .3); }
+  .rodape-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 0; }
   .rodape-logo { width: auto; height: 42px; }
   .rodape-redes { display: flex; flex-wrap: wrap; gap: 8px; }
   .rodape-redes a {
     text-decoration: none; font-weight: 700; font-size: .92rem; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .45);
   }
   .rodape-redes a:hover { background: var(--sand); color: var(--tinta); border-color: var(--sand); }
-  .rodape-redes a:focus-visible { outline-color: var(--sand); }
+
   .rodape small { color: var(--sand); font-size: .88rem; }
 
   /* ===== CARD DE CAPTURA ===== */
@@ -578,7 +584,7 @@
   @media (max-width: 1020px) {
     .servicos-grade { grid-template-columns: repeat(2, 1fr); }
     .metricas { grid-template-columns: repeat(2, 1fr); }
-    .contato-caixa { grid-template-columns: 1fr; padding: 40px; }
+    .contato-caixa { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   }
   @media (max-width: 1240px) {
     :root { --menu-altura: 96px; }
@@ -640,9 +646,9 @@
     .servicos-grade { grid-template-columns: 1fr; }
     .metricas { grid-template-columns: 1fr 1fr; gap: 12px; }
     .metrica { padding: 20px 16px; }
-    .contato-caixa { padding: 28px 18px; border-radius: 26px; }
     .formulario .botao { justify-self: stretch; }
-    .rodape-barra { padding: 24px 20px; }
+    .contato-caixa > div:last-child { padding: 18px; }
+    .rodape-barra { padding: 24px 0; }
     .faixa-marcas { margin-top: 64px; }
     .faixa-logo { width: 70px; height: 70px; }
     .faixa-legenda { letter-spacing: .16em; gap: 12px; }
