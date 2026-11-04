@@ -211,7 +211,7 @@
   .midia.tom-4 { background: linear-gradient(160deg, var(--sand) 0%, var(--mist-claro) 50%, var(--mist) 100%); }
   .p-4x5 { aspect-ratio: 4 / 5; }
   .p-9x16 { aspect-ratio: 9 / 16; }
-  img.p-4x5, img.p-9x16 { object-fit: cover; width: 100%; border-radius: 20px; }
+  img.p-4x5, img.p-9x16 { object-fit: cover; width: 100%; height: auto; border-radius: 20px; }
 
   .flutua { position: absolute; z-index: 3; box-shadow: var(--sombra-forte); }
   .balao-restaurantes {
@@ -222,7 +222,7 @@
     left: 2%; bottom: 36%; background: var(--terra); color: var(--branco); border-radius: 999px;
     padding: 9px 16px; font-weight: 800; font-size: .92rem; animation: boia 6s ease-in-out infinite reverse;
   }
-  .aviao { z-index: 4; width: 34px; height: 34px; left: 40%; top: 36%; box-shadow: none; animation: passeia 9s ease-in-out infinite; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .25)); }
+  .aviao { z-index: 4; width: 34px; height: 34px; left: 40%; top: 12%; box-shadow: none; animation: passeia 9s ease-in-out infinite; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .25)); }
   .aviao svg { transform: rotate(45deg); }
   .aviao em {
     position: absolute; left: 26px; top: 28px; font-style: normal; white-space: nowrap; font-size: .76rem; font-weight: 800;
@@ -232,11 +232,11 @@
   @keyframes boia { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   /* O avião fica até 48% da largura para a etiqueta dele não sair da tela no celular */
   @keyframes passeia {
-    0% { left: 40%; top: 36%; }
-    25% { left: 48%; top: 16%; }
-    50% { left: 22%; top: 28%; }
-    75% { left: 34%; top: 44%; }
-    100% { left: 40%; top: 36%; }
+    0% { left: 40%; top: 12%; }
+    25% { left: 48%; top: 6%; }
+    50% { left: 22%; top: 9%; }
+    75% { left: 34%; top: 15%; }
+    100% { left: 40%; top: 12%; }
   }
 
   /* Cartão de embarque embaixo da foto */
@@ -743,11 +743,8 @@
 
       <div class="palco revela" role="group" aria-label="Foto da família com o cartão de embarque">
         <div class="foto-moldura">
-          <!-- FOTO DA CAPA: troque este div pela imagem real, por exemplo:
-               <img class="p-4x5" src="imagens/familia-capa.jpg" alt="Família Entra Comigo sorrindo em uma viagem" width="800" height="1000"> -->
-          <div class="midia p-4x5" role="img" aria-label="Espaço para a foto da família no formato 4:5">
-            <span>foto da família 4:5</span>
-          </div>
+          <!-- FOTO DA CAPA: para trocar, substitua o arquivo imagens/familia-capa.jpg -->
+          <img class="p-4x5" src="imagens/familia-capa.jpg" alt="Pri, Cidinha e Marcus em um passeio em família" width="900" height="1163">
           <div class="foto-selecao" aria-hidden="true"><i></i><i></i><i></i><i></i><em>Camada 01 · Foto</em></div>
         </div>
 
@@ -1081,6 +1078,7 @@ const traducoes = {
   "Foto da família com o cartão de embarque": ["Family photo with the boarding pass", "Foto de la familia con la tarjeta de embarque"],
   "Espaço para a foto da família no formato 4:5": ["Space for the family photo in 4:5 format", "Espacio para la foto de la familia en formato 4:5"],
   "foto da família 4:5": ["family photo 4:5", "foto de la familia 4:5"],
+  "Pri, Cidinha e Marcus em um passeio em família": ["Pri, Cidinha and Marcus on a family outing", "Pri, Cidinha y Marcus en un paseo en familia"],
   "Camada 01 · Foto": ["Layer 01 · Photo", "Capa 01 · Foto"],
   "🍽️ Restaurantes": ["🍽️ Restaurants", "🍽️ Restaurantes"],
   "Família ✌️": ["Family ✌️", "Familia ✌️"],
