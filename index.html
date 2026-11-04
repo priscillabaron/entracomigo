@@ -474,19 +474,21 @@
   .resultado span { display: block; margin-top: 6px; font-weight: 700; }
   .resultado p { margin-top: 14px; color: var(--sand); font-size: .95rem; }
 
-  .depoimentos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  /* Card com o logo da marca em um círculo saindo pelo topo */
+  .depoimentos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding-top: 50px; }
   .depoimento {
-    margin: 0; background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px 28px 24px; box-shadow: var(--sombra);
-    display: flex; flex-direction: column; gap: 20px;
+    position: relative; margin: 0; padding: 66px 26px 26px; background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio);
+    display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
   }
-  .depoimento blockquote { margin: 0; font-size: 1.08rem; font-weight: 600; line-height: 1.55; }
-  .depoimento blockquote::before { content: "“"; display: block; font-size: 3rem; line-height: .6; font-weight: 800; color: var(--terra); margin-bottom: 10px; }
-  .depoimento figcaption { display: flex; align-items: center; gap: 12px; margin-top: auto; }
-  .avatar {
-    flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--mist); display: grid; place-items: center; font-weight: 800; font-size: .9rem;
+  .depoimento-logo {
+    position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
+    background: var(--branco); box-shadow: 0 0 0 8px rgba(255, 255, 255, .75), var(--sombra);
   }
-  .depoimento figcaption b { display: block; font-size: .98rem; }
-  .depoimento figcaption small { color: var(--texto-suave); font-size: .86rem; font-weight: 600; }
+  .depoimento-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+  .depoimento-marca { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.01em; }
+  .depoimento-estrelas { color: var(--capri); font-size: 1rem; letter-spacing: .22em; line-height: 1; }
+  .depoimento-nicho { color: var(--texto-suave); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .depoimento blockquote { margin: 0; color: var(--texto-suave); font-size: .98rem; line-height: 1.55; }
 
   /* ===== 7. CONTATO ===== */
   .contato-caixa {
@@ -617,7 +619,7 @@
     .destaques-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
     .destaques-palco { --w: min(62vw, 280px); }
     .resultados { grid-template-columns: 1fr; }
-    .depoimentos { grid-template-columns: 1fr; }
+    .depoimentos { grid-template-columns: minmax(0, 1fr); gap: 70px; }
   }
   @media (max-width: 600px) {
     body { font-size: 1rem; }
@@ -1149,7 +1151,10 @@ const traducoes = {
   "Resultado da campanha": ["Campaign result", "Resultado de la campaña"],
   "Conte aqui o que a campanha entregou e em quanto tempo.": ["Describe here what the campaign delivered and how quickly.", "Cuenta aquí qué entregó la campaña y en cuánto tiempo."],
   "O que dizem sobre o nosso trabalho": ["What they say about our work", "Lo que dicen sobre nuestro trabajo"],
-  "Cole aqui o depoimento do cliente, em duas ou três frases.": ["Paste the client's testimonial here, in two or three sentences.", "Pega aquí el testimonio del cliente, en dos o tres frases."],
+  "{n} de 5 estrelas": ["{n} out of 5 stars", "{n} de 5 estrellas"],
+  "Amei!!!! Muito feliz que gostaram! Obrigada pelo carinho no vídeo.": ["Loved it!!!! So happy you liked it! Thank you for the love on the video.", "¡Me encantó!!!! ¡Muy feliz de que les gustara! Gracias por el cariño en el video."],
+  "Queremos agradecer pelo excelente conteúdo que vocês criaram e por compartilhar a experiência de vocês com a comunidade. Temos certeza de que será de grande valor para quem está pensando em visitar o Chile.": ["We want to thank you for the excellent content you created and for sharing your experience with your community. We are sure it will be of great value to anyone thinking of visiting Chile.", "Queremos agradecerles por el excelente contenido que han creado y por compartir su experiencia con su comunidad. Estamos seguros de que será de gran valor para quienes estén pensando en visitar Chile."],
+  "Estamos muito felizes em ver que vocês gostaram dos produtos e que o conteúdo teve boa receptividade do público, parabéns por isso. Ficamos atentos para quando quiserem fazer mais coisas.": ["We are very happy to see that you liked the products and that the content was well received by the audience, congratulations on that. We look forward to whenever you want to do more.", "Estamos muy contentos de ver que les gustaron los productos y que el contenido ha tenido buena acogida del público, felicitaciones por eso. Quedamos atentos para cuando quieran hacer más cosas."],
 
   // Contato
   "Contato": ["Contact", "Contacto"],
@@ -1178,8 +1183,6 @@ const traducoes = {
 // Os textos provisórios numerados seguem o mesmo padrão
 for (let n = 1; n <= 4; n++) {
   traducoes[`Marca 0${n}`] = [`Brand 0${n}`, `Marca 0${n}`];
-  traducoes[`Cliente 0${n}`] = [`Client 0${n}`, `Cliente 0${n}`];
-  traducoes[`Empresa do Cliente 0${n}`] = [`Client 0${n}'s company`, `Empresa del Cliente 0${n}`];
 }
 function t(textoEmPortugues) {
   if (idioma === "pt") return textoEmPortugues;
@@ -1361,12 +1364,30 @@ const resultados = [
   { marca: "Marca 03", numero: "00x", rotulo: "Resultado da campanha", texto: "Conte aqui o que a campanha entregou e em quanto tempo." }
 ];
 
-// DEPOIMENTOS: troque pelo texto real, o nome da pessoa e a empresa
+// DEPOIMENTOS: use as palavras da marca. Para os outros idiomas, inclua o texto também na lista de traduções.
+// nota: as estrelas, de 1 a 5. nicho: use o mesmo nome de um dos nichos para ele sair traduzido.
 const depoimentos = [
-  { texto: "Cole aqui o depoimento do cliente, em duas ou três frases.", nome: "Cliente 01", empresa: "Empresa do Cliente 01" },
-  { texto: "Cole aqui o depoimento do cliente, em duas ou três frases.", nome: "Cliente 02", empresa: "Empresa do Cliente 02" },
-  { texto: "Cole aqui o depoimento do cliente, em duas ou três frases.", nome: "Cliente 03", empresa: "Empresa do Cliente 03" },
-  { texto: "Cole aqui o depoimento do cliente, em duas ou três frases.", nome: "Cliente 04", empresa: "Empresa do Cliente 04" }
+  {
+    marca: "Sweet Quarantine",
+    logo: "logos/sweet-quarantine.png",
+    nicho: "Gastronomia",
+    nota: 5,
+    texto: "Amei!!!! Muito feliz que gostaram! Obrigada pelo carinho no vídeo."
+  },
+  {
+    marca: "RQ Stay",
+    logo: "logos/rq-stay.png",
+    nicho: "Hotelaria & Hospedagem",
+    nota: 5,
+    texto: "Queremos agradecer pelo excelente conteúdo que vocês criaram e por compartilhar a experiência de vocês com a comunidade. Temos certeza de que será de grande valor para quem está pensando em visitar o Chile."
+  },
+  {
+    marca: "Lippi",
+    logo: "logos/lippi.png",
+    nicho: "Lifestyle e Serviços de Viagem",
+    nota: 5,
+    texto: "Estamos muito felizes em ver que vocês gostaram dos produtos e que o conteúdo teve boa receptividade do público, parabéns por isso. Ficamos atentos para quando quiserem fazer mais coisas."
+  }
 ];
 
 /* =====================================================================
@@ -1737,14 +1758,14 @@ $("resultados").innerHTML = resultados.map((r) => `
   </article>`).join("");
 
 // Depoimentos
-$("depoimentos").innerHTML = depoimentos.map((d) => {
-  const iniciais = d.nome.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
-  return `
+$("depoimentos").innerHTML = depoimentos.map((d) => `
   <figure class="depoimento revela">
+    <span class="depoimento-logo"><img src="${esc(d.logo)}" alt="" width="300" height="300" loading="lazy"></span>
+    <figcaption class="depoimento-marca">${esc(d.marca)}</figcaption>
+    <span class="depoimento-estrelas" role="img" aria-label="${esc(t("{n} de 5 estrelas").replace("{n}", d.nota))}">${"★".repeat(d.nota)}</span>
+    <span class="depoimento-nicho">${esc(t(d.nicho))}</span>
     <blockquote>${esc(d.texto)}</blockquote>
-    <figcaption><span class="avatar" aria-hidden="true">${esc(iniciais)}</span><span><b>${esc(d.nome)}</b><small>${esc(d.empresa)}</small></span></figcaption>
-  </figure>`;
-}).join("");
+  </figure>`).join("");
 
 // Ano automático
 $("ano").textContent = new Date().getFullYear();
