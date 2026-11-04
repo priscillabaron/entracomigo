@@ -345,6 +345,27 @@
   .video-info { position: absolute; z-index: 1; left: 14px; right: 14px; bottom: 14px; }
   .video-info b { display: block; font-size: 1.02rem; font-weight: 800; line-height: 1.2; }
 
+  /* Player dentro do card. O player do YouTube é bem mais largo que o card e fica centralizado: o vídeo vertical
+     aparece no meio e tudo que o YouTube desenha nas bordas fica cortado. Ele só aparece enquanto o vídeo está rodando. */
+  .destaque { position: relative; }
+  .destaque-capa { overflow: hidden; border-radius: 20px; isolation: isolate; }
+  .video-card { isolation: isolate; }
+  .player-iframe {
+    position: absolute; top: -100%; left: 50%; width: 2280%; height: 300%; z-index: 1; border: 0; pointer-events: none;
+    transform: translateX(-50%) scale(.345); transform-origin: 50% 50%; background: #000; opacity: 0; transition: opacity .25s ease;
+  }
+  .tocando .player-iframe { opacity: 1; }
+  .tocando.video-card::after, .tocando .video-marca, .tocando .video-play, .tocando .video-info, .tocando .play, .tocando .duracao { opacity: 0; }
+  .carregando .video-play, .carregando .play { animation: pulsa 1s ease-in-out infinite; }
+  @keyframes pulsa { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  .toque { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; border-radius: inherit; }
+  .toque:focus-visible { outline: 3px solid var(--branco); outline-offset: -5px; box-shadow: inset 0 0 0 2px var(--tinta); }
+  .video-aviso {
+    position: absolute; z-index: 2; left: 50%; bottom: 44px; transform: translateX(-50%); max-width: calc(100% - 16px); padding: 6px 12px; border-radius: 999px;
+    background: rgba(27, 43, 61, .88); color: var(--branco); font-size: .74rem; font-weight: 700; text-align: center; width: max-content;
+  }
+  .video-aviso:empty { display: none; }
+
   /* ===== 5. SERVIÇOS ===== */
   .servicos { background: var(--branco); }
   .servicos-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
@@ -824,8 +845,8 @@ const metricas = [
 ];
 
 // CONTEÚDOS DE DESTAQUE: três cards grandes com capa 9:16.
-// link: ONDE ENTRA O LINK DO VÍDEO (Reels, TikTok, YouTube ou Drive). Enquanto for "#", o card não sai da página.
-// capa: ONDE ENTRA A CAPA. Coloque o caminho da imagem (ex.: "imagens/capa-chile.jpg"). Enquanto for "", aparece o degradê.
+// link: ONDE ENTRA O LINK DO VÍDEO. Link do YouTube roda aqui mesmo no card; outros links abrem em outra aba. Enquanto for "#", o card não sai da página.
+// capa: ONDE ENTRA A CAPA. Coloque o caminho da imagem (ex.: "imagens/capa-chile.jpg"). Enquanto for "", a capa vem do YouTube ou aparece o degradê.
 const destaques = [
   {
     link: "#",            // COLE AQUI O LINK DO VÍDEO 01
@@ -950,6 +971,14 @@ function htmlCapa(item, i, legenda, rotuloAlt) {
   }
   return `<div class="midia ${tons[i % tons.length]} p-9x16" role="img" aria-label="${esc(rotuloAlt)}"><span>${legenda}</span></div>`;
 }
+function idDoVideo(link) {
+  return (String(link).match(/(?:shorts\/|embed\/|youtu\.be\/|[?&]v=)([\w-]{6,})/) || [])[1] || "";
+}
+function capaDoVideo(v) {
+  if (v.capa) return v.capa;
+  const id = idDoVideo(v.link);
+  return id ? `https://i.ytimg.com/vi/${id}/oar2.jpg` : "";
+}
 function atributosLink(link) {
   return link && link !== "#" ? `href="${esc(link)}" target="_blank" rel="noopener"` : `href="#destaques"`;
 }
@@ -995,10 +1024,16 @@ $("metricas").innerHTML = metricas.map((m, i) =>
 ).join("");
 
 // Destaques
-$("destaques-grade").innerHTML = destaques.map((d, i) => `
-  <a class="destaque revela" ${atributosLink(d.link)} aria-label="Assistir: ${esc(d.titulo)}, ${esc(d.numero)} ${esc(d.rotulo)}">
+$("destaques-grade").innerHTML = destaques.map((d, i) => {
+  const roda = idDoVideo(d.link);
+  const tag = roda ? "article" : "a";
+  const atributos = roda
+    ? `data-video="${esc(roda)}" data-titulo="${esc(d.titulo)}"`
+    : `${atributosLink(d.link)} aria-label="Assistir: ${esc(d.titulo)}, ${esc(d.numero)} ${esc(d.rotulo)}"`;
+  return `
+  <${tag} class="destaque revela" ${atributos}>
     <div class="destaque-capa">
-      ${htmlCapa(d, i, "capa do vídeo 9:16", "Capa do vídeo " + d.titulo)}
+      ${htmlCapa({ capa: capaDoVideo(d) }, i, "capa do vídeo 9:16", "Capa do vídeo " + d.titulo)}
       <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
       <span class="duracao" aria-hidden="true">${esc(d.duracao)}</span>
     </div>
@@ -1008,14 +1043,10 @@ $("destaques-grade").innerHTML = destaques.map((d, i) => `
       <h3>${esc(d.titulo)}</h3>
       <p>${esc(d.contexto)}</p>
     </div>
-  </a>`).join("");
+  </${tag}>`;
+}).join("");
 
 // Nichos: botões que levam até cada linha e linhas de vídeo que deslizam para o lado
-function capaDoVideo(v) {
-  if (v.capa) return v.capa;
-  const id = (v.link.match(/shorts\/([\w-]+)/) || [])[1];
-  return id ? `https://i.ytimg.com/vi/${id}/oar2.jpg` : "";
-}
 $("nichos-atalhos").innerHTML = nichos.map((n, i) =>
   `<a class="nicho-atalho" href="#nicho-${i + 1}">${esc(n.nome)}</a>`
 ).join("");
@@ -1033,12 +1064,12 @@ $("nichos-lista").innerHTML = nichos.map((n, i) => `
     </div>
     <div class="nicho-trilho">
       ${n.videos.map((v) => `
-      <a class="video-card" ${atributosLink(v.link)} aria-label="Assistir: ${esc(v.titulo)}, ${esc(v.marca)}">
+      <div class="video-card" data-video="${esc(idDoVideo(v.link))}" data-titulo="${esc(v.titulo)}, ${esc(v.marca)}">
         <img src="${esc(capaDoVideo(v))}" alt="" width="270" height="480" loading="lazy" decoding="async">
         <span class="video-marca">${esc(v.marca)}</span>
         <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
         <span class="video-info"><b>${esc(v.titulo)}</b></span>
-      </a>`).join("")}
+      </div>`).join("")}
     </div>
   </article>`).join("");
 
@@ -1061,6 +1092,179 @@ document.querySelectorAll(".nicho").forEach((nicho) => {
   window.addEventListener("resize", atualiza);
   atualiza();
 });
+
+// Player: o vídeo roda dentro do próprio card, com som. Tocar de novo pausa e só um vídeo roda por vez.
+// Quando o vídeo acaba ou é pausado, a capa volta, para nunca aparecer a tela final do YouTube.
+const players = [];
+const playersPorJanela = new Map();
+const ORIGEM_PLAYER = "https://www.youtube-nocookie.com";
+const temMouse = window.matchMedia("(any-hover: hover)").matches;
+window.addEventListener("message", (e) => {
+  if (e.origin !== ORIGEM_PLAYER) return;
+  const player = playersPorJanela.get(e.source);
+  if (!player) return;
+  let dados = e.data;
+  if (typeof dados === "string") { try { dados = JSON.parse(dados); } catch (erro) { return; } }
+  if (dados && typeof dados === "object") player.recebe(dados);
+});
+
+function ligaPlayer(el) {
+  const capa = el.querySelector(".destaque-capa") || el;
+  const titulo = el.dataset.titulo;
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "toque";
+  botao.setAttribute("aria-label", "Assistir: " + titulo);
+  const aviso = document.createElement("span");
+  aviso.className = "video-aviso";
+  aviso.setAttribute("role", "status");
+  capa.appendChild(aviso);
+  el.appendChild(botao);
+
+  let iframe = null, janela = null, querTocar = false, pausado = false, mudo = false, tentouSom = false, legendasFora = false;
+  let estado = -1, tempo = 0, duracao = 0;
+  let timerOuvir = null, timerSemSom = null, timerFalha = null, timerCarga = null;
+
+  function enviar(func, args) {
+    if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: args || [] }), ORIGEM_PLAYER);
+  }
+  function limpaTimers() {
+    clearInterval(timerOuvir); clearTimeout(timerSemSom); clearTimeout(timerFalha); clearTimeout(timerCarga);
+    timerCarga = null;
+  }
+  function para() {
+    limpaTimers();
+    if (janela) playersPorJanela.delete(janela);
+    if (iframe) iframe.remove();
+    iframe = janela = null;
+    querTocar = pausado = mudo = tentouSom = legendasFora = false;
+    estado = -1; tempo = duracao = 0;
+    capa.classList.remove("tocando", "carregando");
+    aviso.textContent = "";
+    botao.setAttribute("aria-label", "Assistir: " + titulo);
+  }
+  function esperaFalha() {
+    clearTimeout(timerFalha);
+    timerFalha = setTimeout(() => { para(); aviso.textContent = "Não carregou. Toque para tentar de novo."; }, 15000);
+  }
+  function abre(comecaMudo) {
+    players.forEach((p) => p.para());
+    querTocar = true;
+    mudo = comecaMudo;
+    capa.classList.add("carregando");
+    botao.setAttribute("aria-label", "Pausar: " + titulo);
+    iframe = document.createElement("iframe");
+    iframe.className = "player-iframe";
+    iframe.title = "Vídeo: " + titulo;
+    iframe.tabIndex = -1;
+    iframe.allow = "autoplay; encrypted-media";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    const origem = location.origin && location.origin !== "null" ? "&origin=" + encodeURIComponent(location.origin) : "";
+    iframe.src = `${ORIGEM_PLAYER}/embed/${el.dataset.video}?enablejsapi=1&autoplay=1&mute=${comecaMudo ? 1 : 0}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&disablekb=1&iv_load_policy=3&cc_load_policy=0${origem}`;
+    iframe.addEventListener("load", () => {
+      janela = iframe.contentWindow;
+      playersPorJanela.set(janela, api);
+      clearInterval(timerOuvir);
+      timerOuvir = setInterval(() => {
+        if (iframe) iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), ORIGEM_PLAYER);
+      }, 250);
+      // Se o navegador não deixar começar com som, recomeça sem som: o som é ligado assim que o vídeo começar a andar
+      if (!comecaMudo) {
+        timerSemSom = setTimeout(() => {
+          if (querTocar && estado !== 1 && estado !== 3) abre(true);
+        }, 2500);
+      }
+    });
+    capa.appendChild(iframe);
+    esperaFalha();
+  }
+  function pausa() {
+    querTocar = false;
+    pausado = true;
+    enviar("pauseVideo");
+    clearTimeout(timerFalha);
+    capa.classList.remove("tocando", "carregando");
+    aviso.textContent = "";
+    botao.setAttribute("aria-label", "Continuar: " + titulo);
+  }
+  function continua() {
+    querTocar = true;
+    pausado = false;
+    capa.classList.add("carregando");
+    enviar("playVideo");
+    esperaFalha();
+    botao.setAttribute("aria-label", "Pausar: " + titulo);
+  }
+  botao.addEventListener("click", () => {
+    if (!iframe) { aviso.textContent = ""; abre(!temMouse); }
+    else if (pausado) continua();
+    else if (mudo) { mudo = false; enviar("unMute"); enviar("setVolume", [100]); enviar("playVideo"); aviso.textContent = ""; }
+    else pausa();
+  });
+
+  const api = {
+    para,
+    estaRodando: () => querTocar,
+    pausa,
+    recebe(dados) {
+      clearInterval(timerOuvir);
+      const info = dados.info;
+      if (!info || typeof info !== "object") return;
+      if (typeof info.playerState === "number") estado = info.playerState;
+      // As legendas só carregam depois que o vídeo começa, então o comando para tirá-las se repete
+      if (estado === 1 && !legendasFora) {
+        legendasFora = true;
+        [0, 400, 1200, 2500, 5000, 8000, 12000].forEach((espera) => setTimeout(() => {
+          enviar("setOption", ["captions", "track", {}]);
+          enviar("setOption", ["cc", "track", {}]);
+          enviar("unloadModule", ["captions"]);
+          enviar("unloadModule", ["cc"]);
+        }, espera));
+      }
+      if (typeof info.currentTime === "number") tempo = info.currentTime;
+      if (typeof info.duration === "number" && info.duration > 0) duracao = info.duration;
+      if (estado === 0 || (duracao && tempo >= duracao - 0.5)) { para(); return; }
+      // Enquanto estiver pausado, a capa fica por cima. Se a pessoa não pediu pausa, o vídeo só aparece depois que começou a andar.
+      // Se o vídeo parar para carregar por mais de meio segundo, a capa volta no lugar da tela preta
+      if (estado !== 3) { clearTimeout(timerCarga); timerCarga = null; }
+      else if (querTocar && !timerCarga && capa.classList.contains("tocando")) {
+        timerCarga = setTimeout(() => {
+          timerCarga = null;
+          if (querTocar && estado === 3) { capa.classList.remove("tocando"); capa.classList.add("carregando"); }
+        }, 500);
+      }
+      // No celular a imagem demora um pouco mais que o som: a capa fica até o vídeo andar 1,5 segundo
+      if (querTocar && estado === 1 && tempo > (temMouse ? 0.1 : 1.5)) {
+        clearTimeout(timerFalha);
+        capa.classList.add("tocando");
+        capa.classList.remove("carregando");
+        if (mudo && !tentouSom) {
+          tentouSom = true;
+          enviar("unMute");
+          enviar("setVolume", [100]);
+        }
+        if (tentouSom && info.muted === false) mudo = false;
+        aviso.textContent = mudo ? "Toque para ligar o som" : "";
+      }
+      // Alguns celulares pausam o vídeo quando o som é ligado sem um toque: volta a rodar sem som e o aviso pede o toque
+      if (querTocar && estado === 2 && tentouSom) {
+        mudo = true;
+        enviar("mute");
+        enviar("playVideo");
+      }
+    }
+  };
+  players.push(api);
+  observadorPlayers.observe(capa);
+  capa.playerApi = api;
+}
+// Quem rolou a página para longe do vídeo não fica ouvindo o som dele
+const observadorPlayers = "IntersectionObserver" in window
+  ? new IntersectionObserver((entradas) => {
+      entradas.forEach((ent) => { if (!ent.isIntersecting && ent.target.playerApi && ent.target.playerApi.estaRodando()) ent.target.playerApi.pausa(); });
+    }, { threshold: 0.2 })
+  : { observe() {} };
+document.querySelectorAll("[data-video]").forEach(ligaPlayer);
 
 // Serviços
 $("servicos-grade").innerHTML = servicos.map((s, i) => `
