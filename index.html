@@ -294,16 +294,8 @@
     position: absolute; right: -14px; bottom: 28px; z-index: 2; background: var(--branco); border-radius: 14px;
     padding: 10px 14px; font-size: .82rem; font-weight: 800; box-shadow: var(--sombra-forte);
   }
+  .sobre-texto .titulo-secao { font-size: clamp(1.7rem, 3.2vw, 2.5rem); max-width: 20ch; line-height: 1.12; }
   .sobre-texto p { color: var(--texto-suave); font-size: 1.1rem; margin-top: 14px; max-width: 54ch; }
-  .promessas { margin-top: 28px; display: grid; gap: 12px; }
-  .promessas li {
-    display: flex; align-items: center; gap: 14px; background: var(--branco); border: 1px solid var(--borda);
-    border-radius: 16px; padding: 14px 18px; font-weight: 700; box-shadow: var(--sombra);
-  }
-  .promessas li::before {
-    content: "✓"; flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--mist);
-    display: grid; place-items: center; font-weight: 800;
-  }
   .assinatura { margin-top: 28px; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.03em; }
   .assinatura small { display: block; font-size: .9rem; font-weight: 600; color: var(--texto-suave); letter-spacing: 0; }
 
@@ -776,16 +768,11 @@
       </div>
       <div class="sobre-texto revela">
         <span class="rotulo"><b>02</b>Sobre a gente</span>
-        <h2 class="titulo-secao" id="titulo-sobre">Prazer, a gente <span class="grifo">entra junto</span> com a sua marca</h2>
+        <h2 class="titulo-secao" id="titulo-sobre">Que bom ter você aqui com a <span class="grifo">nossa família</span></h2>
         <p>Oii! Aqui é a Família Entra Comigo! Somos três brasileiros: Pri, Cidinha e Marcus, apaixonados por viver novas experiências, conhecer lugares e descobrir tudo de bom que o mundo tem a oferecer.</p>
         <p>Por trás deste perfil existe um sonho muito especial: o meu, como filha, de levar meus pais para conhecer o mundo, descobrir novos lugares e viver experiências incríveis.</p>
         <p>Afinal, foram eles que sempre me ensinaram a sonhar. E hoje, poder proporcionar novas descobertas a eles é uma das formas mais bonitas que encontrei de retribuir tudo isso.</p>
         <p>É essa essência que queremos compartilhar com nossos seguidores, ao lado de marcas especiais como a sua, despertando nas pessoas a vontade de conhecer, experimentar e viver coisas novas.</p>
-        <ul class="promessas">
-          <li>Roteiro aprovado antes de gravar</li>
-          <li>Uma rodada de ajuste inclusa</li>
-          <li>Entrega no prazo combinado no briefing</li>
-        </ul>
         <p class="assinatura">Família Entra Comigo<small>@entracomigo</small></p>
       </div>
     </div>
@@ -1067,14 +1054,11 @@ const traducoes = {
   // Sobre
   "🎬 Gravando em família": ["🎬 Filming as a family", "🎬 Grabando en familia"],
   "Sobre a gente": ["About us", "Sobre nosotros"],
-  'Prazer, a gente <span class="grifo">entra junto</span> com a sua marca': ['Nice to meet you, we <span class="grifo">come along</span> with your brand', 'Un placer, <span class="grifo">entramos junto</span> con tu marca'],
+  'Que bom ter você aqui com a <span class="grifo">nossa família</span>': ['So glad to have you here with <span class="grifo">our family</span>', 'Qué bueno tenerte aquí con <span class="grifo">nuestra familia</span>'],
   "Oii! Aqui é a Família Entra Comigo! Somos três brasileiros: Pri, Cidinha e Marcus, apaixonados por viver novas experiências, conhecer lugares e descobrir tudo de bom que o mundo tem a oferecer.": ["Hi there! This is Família Entra Comigo! We are three Brazilians, Pri, Cidinha and Marcus, passionate about having new experiences, getting to know places and discovering all the good things the world has to offer.", "¡Hola! ¡Somos Família Entra Comigo! Somos tres brasileños, Pri, Cidinha y Marcus, apasionados por vivir nuevas experiencias, conocer lugares y descubrir todo lo bueno que el mundo tiene para ofrecer."],
   "Por trás deste perfil existe um sonho muito especial: o meu, como filha, de levar meus pais para conhecer o mundo, descobrir novos lugares e viver experiências incríveis.": ["Behind this profile is a very special dream: mine, as a daughter, to take my parents to see the world, discover new places and live amazing experiences.", "Detrás de este perfil hay un sueño muy especial: el mío, como hija, de llevar a mis padres a conocer el mundo, descubrir nuevos lugares y vivir experiencias increíbles."],
   "Afinal, foram eles que sempre me ensinaram a sonhar. E hoje, poder proporcionar novas descobertas a eles é uma das formas mais bonitas que encontrei de retribuir tudo isso.": ["After all, they are the ones who always taught me to dream. And today, being able to give them new discoveries is one of the most beautiful ways I have found to give back for all of that.", "Al fin y al cabo, fueron ellos quienes siempre me enseñaron a soñar. Y hoy, poder regalarles nuevos descubrimientos es una de las formas más bonitas que encontré de retribuir todo eso."],
   "É essa essência que queremos compartilhar com nossos seguidores, ao lado de marcas especiais como a sua, despertando nas pessoas a vontade de conhecer, experimentar e viver coisas novas.": ["This is the essence we want to share with our followers, alongside special brands like yours, inspiring people to explore, try and live new things.", "Esta es la esencia que queremos compartir con nuestros seguidores, junto a marcas especiales como la tuya, despertando en las personas las ganas de conocer, probar y vivir cosas nuevas."],
-  "Roteiro aprovado antes de gravar": ["Script approved before filming", "Guion aprobado antes de grabar"],
-  "Uma rodada de ajuste inclusa": ["One round of revisions included", "Una ronda de ajustes incluida"],
-  "Entrega no prazo combinado no briefing": ["Delivery on the date agreed in the briefing", "Entrega en el plazo acordado en el briefing"],
 
   // Destaques
   'Conteúdo de <span class="grifo">destaque</span>': ['Featured <span class="grifo">content</span>', 'Contenido <span class="grifo">destacado</span>'],
