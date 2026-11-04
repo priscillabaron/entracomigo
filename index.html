@@ -387,6 +387,7 @@
   .video-play svg { width: 20px; height: 20px; margin-left: 3px; }
   .video-info { position: absolute; z-index: 1; left: 14px; right: 14px; bottom: 14px; }
   .video-info b { display: block; font-size: 1.02rem; font-weight: 800; line-height: 1.2; }
+  .video-info small { display: block; margin-top: 3px; font-size: .78rem; font-weight: 600; line-height: 1.2; }
 
   /* Player dentro do card. O player do YouTube é bem mais largo que o card e fica centralizado: o vídeo vertical
      aparece no meio e tudo que o YouTube desenha nas bordas fica cortado. Ele só aparece enquanto o vídeo está rodando. */
@@ -1096,6 +1097,8 @@ const traducoes = {
   "Restaurante em Gonçalves, MG": ["Restaurant in Gonçalves, MG", "Restaurante en Gonçalves, MG"],
   "Passeio em Portillo": ["Portillo tour", "Paseo por Portillo"],
   "Vinícola Undurraga": ["Undurraga Winery", "Viña Undurraga"],
+  "Andes Panorâmico": ["Panoramic Andes", "Andes Panorámicos"],
+  "Especial de Natal": ["Christmas special", "Especial de Navidad"],
   "Fábrica Nugali": ["Nugali Factory", "Fábrica Nugali"],
   "Queijos Laghi & Tosi": ["Laghi & Tosi cheeses", "Quesos Laghi & Tosi"],
   "Inauguração Quiosque Vizzela": ["Vizzela kiosk opening", "Inauguración del quiosco Vizzela"],
@@ -1285,6 +1288,7 @@ const nichos = [
     descricao: "Hotéis, resorts, Airbnb, pousadas e chalés",
     videos: [
       { marca: "RQ Stay",  titulo: "Santa Magdalena",  link: "https://youtube.com/shorts/g31NRKdNpXE" },
+      { marca: "RQ Stay",  titulo: "Santa Magdalena",  link: "https://youtube.com/shorts/zEOX3NM7yFA" },
       { marca: "EcoResort", titulo: "Praia dos Carneiros", link: "https://youtube.com/shorts/jkSl_oeng8g" }
     ]
   },
@@ -1294,7 +1298,9 @@ const nichos = [
     videos: [
       { marca: "Turkish Airlines", titulo: "Turkish Airlines",     link: "https://youtube.com/shorts/5hCSF6YD8Lk" },
       { marca: "Cityplan Go",      titulo: "App City Plan Go",     link: "https://youtube.com/shorts/g_kv0cY9ZH4" },
+      { marca: "Cityplan Go",      titulo: "App City Plan Go",     link: "https://youtube.com/shorts/9lOPra5Tkx8" },
       { marca: "Lippi",            titulo: "Roupas Lippi",         link: "https://youtube.com/shorts/iDXx3jYck6A" },
+      { marca: "Lippi",            titulo: "Roupas Lippi",         link: "https://youtube.com/shorts/pypKqo_DImY" },
       { marca: "Shein",            titulo: "Roupas Shein",         link: "https://youtube.com/shorts/IBkjqAwWv6g" },
       { marca: "Pure Us",          titulo: "Pure Us",              link: "https://youtube.com/shorts/agcbYM4w7jY" }
     ]
@@ -1305,8 +1311,10 @@ const nichos = [
     videos: [
       { marca: "Norte Sul Chile", titulo: "Passeio em Portillo", link: "https://youtube.com/shorts/Hf2oJI-PwOY" },
       { marca: "Norte Sul Chile", titulo: "Vinícola Undurraga",  link: "https://youtube.com/shorts/27HiYs0oq4w" },
+      { marca: "Norte Sul Chile", titulo: "Andes Panorâmico",    link: "https://youtube.com/shorts/DJ6QX_xdJaA" },
       { marca: "Parksnet",        titulo: "Bondinhos Aéreos",    link: "https://youtube.com/shorts/cZsW7BIBSvk" },
-      { marca: "Parksnet",        titulo: "Parksnet NBA",        link: "https://youtube.com/shorts/iMWCls2kkkY" }
+      { marca: "Parksnet",        titulo: "Parksnet NBA",        link: "https://youtube.com/shorts/iMWCls2kkkY" },
+      { marca: "MotoRent",        titulo: "MotoRent",            link: "https://youtube.com/shorts/RoOiqxaY0K4" }
     ]
   },
   {
@@ -1329,7 +1337,9 @@ const nichos = [
     videos: [
       { marca: "Vizzela",   titulo: "Inauguração Quiosque Vizzela", link: "https://youtube.com/shorts/T_-c3UDx2hE" },
       { marca: "Karsten",   titulo: "Loja Karsten",                 link: "https://youtube.com/shorts/xzPA4ijEqlA" },
-      { marca: "Tia Sônia", titulo: "Casa Tia Sônia",               link: "https://youtube.com/shorts/aoGcPZwyUmA" }
+      { marca: "Tia Sônia", titulo: "Casa Tia Sônia",               link: "https://youtube.com/shorts/aoGcPZwyUmA" },
+      { marca: "Ailton Design", titulo: "Ailton Design", detalhe: "Especial de Natal", link: "https://youtube.com/shorts/JZqP5uYAOTY" },
+      { marca: "Rizzo", titulo: "Rizzo", detalhe: "Especial de Natal", link: "https://youtube.com/shorts/fg_AHLlEQsY" }
     ]
   },
   {
@@ -1541,7 +1551,7 @@ $("nichos-lista").innerHTML = nichos.map((n, i) => `
         <img src="${esc(capaDoVideo(v))}" alt="" width="270" height="480" loading="lazy" decoding="async">
         <span class="video-marca">${esc(v.marca)}</span>
         <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
-        <span class="video-info"><b>${esc(v.titulo)}</b></span>
+        <span class="video-info"><b>${esc(v.titulo)}</b>${v.detalhe ? `<small>${esc(v.detalhe)}</small>` : ""}</span>
       </div>`).join("")}
     </div>
   </article>`).join("");
