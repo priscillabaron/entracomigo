@@ -6,6 +6,7 @@
 <title>Família Entra Comigo · Mídia kit Creator Family</title>
 <meta name="description" content="Mídia kit da Família Entra Comigo: vídeos de viagens e restaurantes em família para marcas, com roteiro aprovado e entrega em até 72 horas úteis.">
 <meta name="theme-color" content="#f7f2e8">
+<link rel="icon" type="image/svg+xml" href="imagens/marca/icone-ec.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,7 +29,7 @@
     --sombra-forte: 0 24px 60px rgba(27, 43, 61, .14), 0 4px 12px rgba(27, 43, 61, .06);
     --raio: 22px;
     --largura: 1180px;
-    --menu-altura: 76px;
+    --menu-altura: 108px;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -94,26 +95,50 @@
   .botao-branco { background: var(--branco); color: var(--tinta); box-shadow: var(--sombra); }
 
   /* ===== 1. MENU ===== */
-  .menu {
-    position: fixed; top: 12px; left: 0; right: 0; z-index: 100; padding: 0 16px;
+  .topo { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+
+  /* Barra de avisos: selo da data + contagem + mensagem que troca + link para reservar */
+  .barra-topo {
+    display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 36px; padding: 6px 16px;
+    background: var(--capri); color: var(--branco); font-size: .8rem; font-weight: 600; letter-spacing: .02em;
   }
+  .barra-topo [hidden] { display: none; }
+  .barra-selo { flex: none; padding: 4px 11px; border-radius: 999px; background: var(--terra); font-size: .68rem; font-weight: 800; letter-spacing: .12em; white-space: nowrap; }
+  .barra-selo-curto { display: none; }
+  .barra-contagem { font-weight: 800; white-space: nowrap; }
+  .barra-sep { opacity: .6; }
+  .barra-msgs { display: grid; align-items: center; min-width: 0; width: 240px; height: 1.6em; overflow: hidden; }
+  .barra-msg {
+    grid-area: 1 / 1; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    opacity: 0; transform: translateY(100%); transition: opacity .35s ease, transform .35s ease;
+  }
+  .barra-msg.ativa { opacity: 1; transform: translateY(0); }
+  .barra-msg.saindo { opacity: 0; transform: translateY(-100%); }
+  .barra-link { flex: none; color: var(--branco); font-weight: 700; white-space: nowrap; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .55); }
+  .barra-link:hover { border-color: var(--branco); }
+  .barra-link:focus-visible { outline-color: var(--branco); }
+
+  /* Menu com o logo */
+  .menu-fundo { background: rgba(247, 242, 232, .95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--borda); }
   .menu-barra {
-    max-width: var(--largura); margin: 0 auto; height: 60px;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    background: rgba(255, 255, 255, .92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--borda); border-radius: 999px; padding: 0 10px 0 22px; box-shadow: var(--sombra);
+    position: relative; max-width: var(--largura); margin: 0 auto; min-height: 72px; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
-  .menu-nome { font-weight: 800; text-decoration: none; letter-spacing: -0.02em; white-space: nowrap; display: flex; align-items: center; gap: 10px; }
-  .menu-nome::before { content: ""; width: 12px; height: 12px; border-radius: 4px; background: var(--mist); box-shadow: 0 0 0 2px var(--tinta); }
-  .menu-links { display: flex; align-items: center; gap: 2px; }
-  .menu-links a {
-    text-decoration: none; font-weight: 600; font-size: .92rem; padding: 8px 13px; border-radius: 999px;
+  .menu-logo { flex: none; display: block; }
+  .menu-logo img { width: auto; height: 42px; }
+  .menu-links { display: flex; align-items: center; gap: 24px; }
+  .menu-links a:not(.menu-cta) {
+    padding: 6px 2px; border-bottom: 2px solid transparent; text-decoration: none; color: var(--texto-suave);
+    font-weight: 600; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; transition: color .15s ease, border-color .15s ease;
   }
-  .menu-links a:hover { background: var(--fundo); }
-  .menu-links a.menu-cta { background: var(--terra); color: var(--branco); margin-left: 6px; }
-  .menu-links a.menu-cta:hover { background: var(--terra-escuro); }
+  .menu-links a:not(.menu-cta):hover { color: var(--capri); border-color: var(--capri); }
+  .menu-links a.menu-cta {
+    margin-left: 8px; padding: 14px 22px; border-radius: 4px; background: var(--capri); color: var(--branco);
+    font-weight: 700; font-size: .88rem; line-height: 1.2; text-decoration: none; white-space: nowrap; transition: background .15s ease;
+  }
+  .menu-links a.menu-cta:hover { background: var(--terra); }
   .menu-sanduiche {
-    display: none; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--fundo);
+    display: none; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--borda); background: transparent;
     align-items: center; justify-content: center; flex-direction: column; gap: 5px;
   }
   .menu-sanduiche span { display: block; width: 18px; height: 2px; background: var(--tinta); border-radius: 2px; transition: transform .25s ease, opacity .25s ease; }
@@ -459,7 +484,7 @@
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;
     background: var(--capri); color: var(--branco); border-radius: 26px; padding: 26px 30px;
   }
-  .rodape-nome { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.02em; }
+  .rodape-logo { width: auto; height: 42px; }
   .rodape-redes { display: flex; flex-wrap: wrap; gap: 8px; }
   .rodape-redes a {
     text-decoration: none; font-weight: 700; font-size: .92rem; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .45);
@@ -507,16 +532,29 @@
     .metricas { grid-template-columns: repeat(2, 1fr); }
     .contato-caixa { grid-template-columns: 1fr; padding: 40px; }
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1080px) {
+    :root { --menu-altura: 96px; }
+    .menu-barra { min-height: 60px; padding: 0 16px; }
+    .menu-logo img { height: 34px; }
     .menu-sanduiche { display: inline-flex; }
     .menu-links {
-      position: absolute; top: 70px; left: 16px; right: 16px; flex-direction: column; align-items: stretch; gap: 4px;
-      background: var(--branco); border: 1px solid var(--borda); border-radius: 22px; padding: 10px; box-shadow: var(--sombra-forte);
+      position: absolute; top: calc(100% + 8px); left: 16px; right: 16px; flex-direction: column; align-items: stretch; gap: 4px;
+      background: var(--branco); border: 1px solid var(--borda); border-radius: 18px; padding: 10px; box-shadow: var(--sombra-forte);
       display: none;
     }
     .menu-links.aberto { display: flex; }
-    .menu-links a { padding: 13px 16px; font-size: 1rem; }
+    .menu-links a:not(.menu-cta) { padding: 13px 16px; border-bottom: 0; font-size: .82rem; }
     .menu-links a.menu-cta { margin: 6px 0 0; text-align: center; }
+  }
+  @media (max-width: 760px) {
+    .barra-topo { gap: 8px; padding: 6px 12px; }
+    .barra-selo-longo, .barra-contagem, .barra-sep { display: none; }
+    .barra-selo-curto { display: inline; }
+    .barra-msgs { flex: 1; width: auto; }
+    .barra-link { font-size: 0; border: 0; }
+    .barra-link::after { content: "→"; font-size: 1.1rem; }
+  }
+  @media (max-width: 900px) {
     .capa-grade, .sobre-grade { grid-template-columns: 1fr; gap: 56px; }
     .sobre-foto { margin: 0 auto; width: 100%; }
     .destaques-grade { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
@@ -565,21 +603,32 @@
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
 <!-- ===== 1. CAPA: MENU ===== -->
-<header class="menu">
-  <nav class="menu-barra" aria-label="Menu principal">
-    <a class="menu-nome" href="#topo">Família Entra Comigo</a>
-    <button class="menu-sanduiche" type="button" aria-expanded="false" aria-controls="menu-links" aria-label="Abrir menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="menu-links" id="menu-links">
-      <a href="#sobre">Sobre</a>
-      <a href="#destaques">Destaques</a>
-      <a href="#trabalhos">Trabalhos</a>
-      <a href="#servicos">Serviços</a>
-      <a href="#numeros">Números</a>
-      <a class="menu-cta" href="#contato">Contato</a>
-    </div>
-  </nav>
+<header class="topo">
+  <!-- Barra de avisos: os textos e as datas ficam no objeto "barraTopo", no começo do script -->
+  <div class="barra-topo" role="region" aria-label="Avisos e reserva de agenda">
+    <span class="barra-selo"><span class="barra-selo-longo" id="barra-selo-longo"></span><span class="barra-selo-curto" id="barra-selo-curto"></span></span>
+    <span class="barra-contagem" id="barra-contagem"></span>
+    <span class="barra-sep" id="barra-sep" aria-hidden="true">·</span>
+    <span class="barra-msgs" id="barra-msgs"></span>
+    <a class="barra-link" id="barra-link" href="https://wa.me/5511996975223" target="_blank" rel="noopener" aria-label="Reservar agenda pelo WhatsApp">reservar agenda →</a>
+  </div>
+  <div class="menu-fundo">
+    <nav class="menu-barra" aria-label="Menu principal">
+      <a class="menu-logo" href="#topo"><img src="imagens/marca/logo-ec.svg" alt="Família Entra Comigo, ir para o topo" width="221" height="42"></a>
+      <button class="menu-sanduiche" type="button" aria-expanded="false" aria-controls="menu-links" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="menu-links" id="menu-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#destaques">Destaques</a>
+        <a href="#trabalhos">Trabalhos</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#numeros">Números</a>
+        <a href="#contato">Contato</a>
+        <a class="menu-cta" href="#contato">Trabalhe com a gente</a>
+      </div>
+    </nav>
+  </div>
 </header>
 
 <main id="conteudo">
@@ -779,7 +828,7 @@
 <footer class="rodape">
   <div class="container">
     <div class="rodape-barra">
-      <span class="rodape-nome">Família Entra Comigo</span>
+      <img class="rodape-logo" src="imagens/marca/logo-ec-branco.svg" alt="Família Entra Comigo" width="221" height="42" loading="lazy">
       <nav class="rodape-redes" aria-label="Redes sociais">
         <a href="https://www.instagram.com/entracomigo/" target="_blank" rel="noopener">Instagram</a>
         <a href="https://wa.me/5511996975223" target="_blank" rel="noopener">WhatsApp</a>
@@ -825,6 +874,34 @@
 /* =====================================================================
    DADOS DO MÍDIA KIT: edite aqui, sem mexer no HTML
    ===================================================================== */
+
+// BARRA DE AVISOS: a data especial e os dias que faltam são calculados sozinhos, no horário de São Paulo.
+// Em "mensagens", {mes} vira o mês da agenda e {data} vira o nome da próxima data especial.
+// O selo e a contagem só aparecem quando faltam "janelaDias" dias ou menos. Fora disso, o selo diz "AGENDA ABERTA".
+const barraTopo = {
+  janelaDias: 60,
+  intervaloMs: 3500,
+  whatsapp: "5511996975223",
+  textoWhatsapp: "Oi! Vi o mídia kit da Família Entra Comigo e quero reservar vídeos para {mes}.",
+  mensagens: [
+    "agenda aberta para {mes}",
+    "reserve seus vídeos para {mes}",
+    "vídeo para Instagram",
+    "vídeo para TikTok",
+    "vídeo para YouTube",
+    "vídeo para anúncios"
+  ],
+  // regra fixa: mês e dia. Regra por semana: "ordem" é qual semana do mês e diaSemana vai de 0 (domingo) a 6 (sábado).
+  datas: [
+    { nome: "Dia do Consumidor", prep: "pro", mes: 3, dia: 15 },
+    { nome: "Dia das Mães", prep: "pro", mes: 5, ordem: 2, diaSemana: 0 },
+    { nome: "Dia dos Namorados", prep: "pro", mes: 6, dia: 12 },
+    { nome: "Dia dos Pais", prep: "pro", mes: 8, ordem: 2, diaSemana: 0 },
+    { nome: "Dia das Crianças", prep: "pro", mes: 10, dia: 12 },
+    { nome: "Black Friday", prep: "pra", mes: 11, ordem: 4, diaSemana: 5 },
+    { nome: "Natal", prep: "pro", mes: 12, dia: 25 }
+  ]
+};
 
 // MARCAS: os logos que andam na faixa que fecha a capa. Para incluir uma marca, coloque a imagem
 // quadrada na pasta "logos" e adicione uma linha aqui. O número de "marcas atendidas" acompanha esta lista.
@@ -1304,8 +1381,59 @@ $("depoimentos").innerHTML = depoimentos.map((d) => {
 // Ano automático
 $("ano").textContent = new Date().getFullYear();
 
+// Barra de avisos
+function dataDoAno(d, ano) {
+  const doisDigitos = (n) => String(n).padStart(2, "0");
+  if (d.dia) return `${ano}-${doisDigitos(d.mes)}-${doisDigitos(d.dia)}`;
+  const primeiroDia = new Date(Date.UTC(ano, d.mes - 1, 1)).getUTCDay();
+  const dia = 1 + ((d.diaSemana - primeiroDia + 7) % 7) + (d.ordem - 1) * 7;
+  return `${ano}-${doisDigitos(d.mes)}-${doisDigitos(dia)}`;
+}
+function montaBarraTopo() {
+  const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const [anoHoje, mesHoje, diaHoje] = hoje.split("-").map(Number);
+  let proxima = null;
+  barraTopo.datas.forEach((d) => {
+    [anoHoje, anoHoje + 1].forEach((ano) => {
+      const data = dataDoAno(d, ano);
+      if (data >= hoje && (!proxima || data < proxima.data)) proxima = { ...d, data };
+    });
+  });
+  const faltam = Math.round((Date.parse(proxima.data) - Date.parse(hoje)) / 86400000);
+  const dentro = faltam <= barraTopo.janelaDias;
+  // Até o dia 10 a agenda fala do mês atual; depois, do próximo
+  const numeroMes = diaHoje <= 10 ? mesHoje : (mesHoje % 12) + 1;
+  const nomeMes = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"][numeroMes - 1];
+  const nomeData = proxima.nome;
+  const selo = dentro ? nomeData.toUpperCase() : "AGENDA ABERTA";
+  const sufixoSelo = faltam === 0 ? "HOJE" : (faltam === 1 ? "1 DIA" : `${faltam} DIAS`);
+  $("barra-selo-longo").textContent = selo;
+  $("barra-selo-curto").textContent = dentro ? `${selo} · ${sufixoSelo}` : selo;
+  $("barra-contagem").textContent = !dentro ? "" : faltam === 0 ? `É hoje: ${nomeData}!`
+    : faltam === 1 ? `Falta 1 dia ${proxima.prep} ${nomeData}` : `Faltam ${faltam} dias ${proxima.prep} ${nomeData}`;
+  $("barra-contagem").hidden = !dentro;
+  $("barra-sep").hidden = !dentro;
+  $("barra-msgs").innerHTML = barraTopo.mensagens.map((m, i) =>
+    `<span class="barra-msg${i === 0 ? " ativa" : ""}">${esc(m.replace("{mes}", nomeMes).replace("{data}", nomeData))}</span>`
+  ).join("");
+  $("barra-link").href = `https://wa.me/${barraTopo.whatsapp}?text=${encodeURIComponent(barraTopo.textoWhatsapp.replace("{mes}", nomeMes))}`;
+  if (reduzMovimento) return;
+  const itens = $("barra-msgs").children;
+  let atual = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    const saindo = itens[atual];
+    saindo.classList.remove("ativa");
+    saindo.classList.add("saindo");
+    setTimeout(() => saindo.classList.remove("saindo"), 400);
+    atual = (atual + 1) % itens.length;
+    itens[atual].classList.add("ativa");
+  }, barraTopo.intervaloMs);
+}
+montaBarraTopo();
+
 // Menu sanduíche
-const botaoMenu = document.querySelector(".menu-sanduiche");
+const botaoMenu =document.querySelector(".menu-sanduiche");
 const linksMenu = $("menu-links");
 function fechaMenu() {
   linksMenu.classList.remove("aberto");
