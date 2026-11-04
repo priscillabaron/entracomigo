@@ -425,6 +425,9 @@
   }
   .servico h3 { font-size: 1.32rem; margin: 22px 0 10px; letter-spacing: -0.02em; }
   .servico p { color: var(--texto-suave); font-size: .98rem; }
+  .servico-obs { display: block; margin-top: 12px; color: var(--texto-suave); font-size: .76rem; line-height: 1.45; }
+  /* São 7 cards: o último ocupa a linha toda para não ficar sozinho num canto */
+  .servico:last-child { grid-column: 1 / -1; }
 
   /* ===== PROCESSO: etapas ligadas por uma linha, com uma bolinha que corre de uma etapa a outra ===== */
   .processo { background: var(--sand); }
@@ -809,8 +812,8 @@
     <div class="container">
       <div class="revela">
         <span class="rotulo"><b>05</b>Serviços</span>
-        <h2 class="titulo-secao" id="titulo-servicos">Como eu te <span class="grifo">ajudo</span></h2>
-        <p class="sub-secao">Escolha um formato ou monte um combo. Tudo com roteiro aprovado antes e prazo combinado no briefing.</p>
+        <h2 class="titulo-secao" id="titulo-servicos">Como podemos <span class="grifo">ajudar</span></h2>
+        <p class="sub-secao">Escolha o formato ideal ou monte um combo com a gente. Criamos conteúdos autênticos que conectam marcas a famílias que amam viajar, viver experiências e descobrir novos lugares.</p>
       </div>
       <div class="servicos-grade" id="servicos-grade"></div>
     </div>
@@ -1108,14 +1111,19 @@ const nichos = [
   }
 ];
 
-// SERVIÇOS: seis cards numerados
+// SERVIÇOS: cards numerados na ordem da lista. "observacao" é opcional e aparece em letra pequena.
 const servicos = [
-  { titulo: "Vídeo UGC", descricao: "Vídeo vertical gravado pela família, com roteiro aprovado, pronto para você postar nos perfis da marca." },
-  { titulo: "Corte para anúncio", descricao: "Versões curtas do mesmo vídeo, com gancho forte nos primeiros segundos, para testar nos seus anúncios." },
-  { titulo: "Fotos do produto", descricao: "Fotos do produto em uso, na viagem, à mesa ou em casa, com luz natural e cara de vida real." },
-  { titulo: "Unboxing", descricao: "A primeira impressão ao abrir a caixa, com reação verdadeira e os detalhes que fazem vender." },
-  { titulo: "Publicação no meu perfil", descricao: "O vídeo vai ao ar no @entracomigo, com marcação da marca, falando direto com famílias que viajam." },
-  { titulo: "Pacote mensal", descricao: "Um número fixo de vídeos por mês, com calendário combinado, para a sua marca aparecer sempre." }
+  {
+    titulo: "Vídeo UGC",
+    descricao: "Vídeos verticais produzidos pela nossa família, com roteiro alinhado e aprovado pela marca, mostrando produtos, serviços e experiências de forma natural e envolvente.",
+    observacao: "Observação: o conteúdo UGC é produzido para a marca utilizar em seus próprios canais e não é publicado automaticamente no perfil da nossa família. Para publicação no nosso perfil, temos a opção de publicidade."
+  },
+  { titulo: "Publicidade no nosso perfil", descricao: "Apresentamos sua marca à nossa comunidade por meio de Reels, Stories ou outros formatos, compartilhando nossa experiência de forma espontânea e conectada ao nosso estilo de vida." },
+  { titulo: "Conteúdo para anúncios", descricao: "Vídeos criativos com ganchos estratégicos, demonstração de produtos e experiências reais, pensados para campanhas de tráfego pago e anúncios nas plataformas digitais." },
+  { titulo: "Fotos lifestyle", descricao: "Fotografias espontâneas e profissionais da nossa família utilizando produtos, conhecendo destinos, aproveitando hospedagens ou vivendo experiências. Imagens com contexto real e conexão." },
+  { titulo: "Cobertura de experiências", descricao: "Transformamos visitas, hospedagens, passeios e experiências gastronômicas em conteúdos que despertam o desejo de conhecer. Ideal para hotéis, restaurantes, destinos turísticos e atrações." },
+  { titulo: "Unboxing e recebidos", descricao: "Apresentamos produtos desde o primeiro contato, mostrando detalhes, funcionalidades e nossas impressões de maneira leve, verdadeira e próxima." },
+  { titulo: "Pacote mensal", descricao: "Uma parceria contínua com produção de conteúdos ao longo do mês, incluindo vídeos, fotos e formatos combinados em um calendário estratégico para manter sua marca presente e relevante." }
 ];
 
 // RESULTADOS DE CAMPANHA: troque a marca, o número e o texto pelos resultados reais
@@ -1488,6 +1496,7 @@ $("servicos-grade").innerHTML = servicos.map((s, i) => `
     <span class="servico-num">${String(i + 1).padStart(2, "0")}</span>
     <h3>${esc(s.titulo)}</h3>
     <p>${esc(s.descricao)}</p>
+    ${s.observacao ? `<small class="servico-obs">${esc(s.observacao)}</small>` : ""}
   </article>`).join("");
 
 // Resultados de campanha
