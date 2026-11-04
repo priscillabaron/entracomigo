@@ -302,12 +302,32 @@
   .assinatura small { display: block; font-size: .9rem; font-weight: 600; color: var(--texto-suave); letter-spacing: 0; }
 
   /* ===== 3. DESTAQUES ===== */
-  .destaques-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
-  .destaque {
-    display: flex; flex-direction: column; text-decoration: none; background: var(--branco); border: 1px solid var(--borda);
-    border-radius: var(--raio); padding: 12px 12px 22px; box-shadow: var(--sombra); transition: transform .25s ease, box-shadow .25s ease;
+  /* Título à esquerda e, à direita, um carrossel com o vídeo em foco no meio e os outros apagados dos lados */
+  .destaques-layout { display: grid; grid-template-columns: minmax(0, .62fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .destaques-texto p { margin-top: 12px; color: var(--texto-suave); max-width: 40ch; }
+  .destaques-texto .destaques-chamada { font-weight: 700; color: var(--texto); font-size: 1.08rem; }
+  .destaques-palco {
+    --w: clamp(230px, 22vw, 290px);
+    position: relative; display: grid; justify-items: center; align-items: start; overflow: hidden; padding: 4px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
   }
-  .destaque:hover { transform: translateY(-6px); box-shadow: var(--sombra-forte); }
+  .destaque {
+    grid-area: 1 / 1; width: var(--w); cursor: pointer; opacity: .4;
+    transform: translateX(calc(var(--d, 0) * (100% + 16px))) scale(.92); transition: transform .45s ease, opacity .45s ease;
+  }
+  .destaque.ativo { opacity: 1; transform: none; z-index: 1; }
+  .destaque.distante { opacity: 0; visibility: hidden; }
+  .destaque:not(.ativo) .play { opacity: 0; }
+  .destaques-seta {
+    position: absolute; z-index: 4; top: 50%; width: 44px; height: 44px; margin-top: -22px; border-radius: 50%; border: 1px solid var(--borda);
+    background: var(--branco); display: grid; place-items: center; font-size: 1.1rem; font-weight: 800; box-shadow: var(--sombra); transition: background .2s ease, color .2s ease;
+  }
+  .destaques-seta:hover { background: var(--capri); border-color: var(--capri); color: var(--branco); }
+  .destaques-seta:focus-visible { box-shadow: 0 0 0 6px var(--mist); }
+  .destaques-seta[hidden] { display: none; }
+  #destaque-anterior { left: max(4px, calc(50% - var(--w) / 2 - 60px)); }
+  #destaque-proximo { right: max(4px, calc(50% - var(--w) / 2 - 60px)); }
   .destaque-capa { position: relative; }
   .destaque-capa .play {
     position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -316,17 +336,12 @@
   }
   .destaque:hover .play { transform: translate(-50%, -50%) scale(1.08); }
   .destaque-capa .play svg { width: 26px; height: 26px; margin-left: 4px; }
-  .destaque-capa .duracao {
-    position: absolute; z-index: 2; top: 12px; right: 12px; background: rgba(27, 43, 61, .8); color: var(--branco);
-    border-radius: 8px; padding: 2px 8px; font-size: .74rem; font-weight: 700;
+  .destaque h3 { margin-bottom: 10px; font-size: .92rem; letter-spacing: .04em; line-height: 1.3; text-align: center; text-transform: uppercase; }
+  .destaque-dado {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 4px 0; margin-top: 10px; border-top: 1px solid var(--borda);
   }
-  .destaque-info { padding: 20px 10px 0; }
-  .destaque-numero { font-size: clamp(2.2rem, 3.6vw, 2.9rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
-  .destaque-rotulo {
-    display: inline-block; margin-top: 8px; background: var(--mist); border-radius: 7px; padding: 2px 9px; font-size: .8rem; font-weight: 800;
-  }
-  .destaque h3 { font-size: 1.2rem; margin-top: 16px; letter-spacing: -0.02em; line-height: 1.25; }
-  .destaque p { color: var(--texto-suave); font-size: .95rem; margin-top: 6px; }
+  .destaque-dado span { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--texto-suave); }
+  .destaque-dado strong { font-size: 1.15rem; font-weight: 800; }
 
   /* ===== 4. TRABALHOS POR NICHO ===== */
   .nichos-atalhos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
@@ -558,7 +573,8 @@
   @media (max-width: 900px) {
     .capa-grade, .sobre-grade { grid-template-columns: 1fr; gap: 56px; }
     .sobre-foto { margin: 0 auto; width: 100%; }
-    .destaques-grade { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .destaques-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .destaques-palco { --w: min(62vw, 280px); }
     .resultados { grid-template-columns: 1fr; }
     .depoimentos { grid-template-columns: 1fr; }
   }
@@ -716,13 +732,20 @@
   <!-- ===== 3. CONTEÚDOS DE DESTAQUE ===== -->
   <section id="destaques" aria-labelledby="titulo-destaques">
     <div class="container">
-      <div class="revela">
-        <span class="rotulo"><b>03</b>Conteúdos de destaque</span>
-        <h2 class="titulo-secao" id="titulo-destaques">Vídeos que fizeram <span class="grifo">barulho</span></h2>
-        <p class="sub-secao">Toque em um vídeo para assistir.</p>
+      <div class="destaques-layout">
+        <div class="destaques-texto revela">
+          <span class="rotulo"><b>03</b>Destaques</span>
+          <h2 class="titulo-secao" id="titulo-destaques">Conteúdo de <span class="grifo">destaque</span></h2>
+          <p class="destaques-chamada">Toque no vídeo para assistir aqui mesmo.</p>
+          <p>Alguns dos vídeos que a gente criou para as marcas parceiras. Use as setas para ver os outros.</p>
+        </div>
+        <!-- Os cards vêm do array "destaques" no script: lá ficam o link do vídeo e a capa de cada um -->
+        <div class="destaques-palco revela" id="destaques-palco" role="group" aria-label="Vídeos em destaque">
+          <div class="destaques-grade" id="destaques-grade" style="display:contents"></div>
+          <button type="button" class="destaques-seta" id="destaque-anterior" aria-label="Destaque anterior">←</button>
+          <button type="button" class="destaques-seta" id="destaque-proximo" aria-label="Próximo destaque">→</button>
+        </div>
       </div>
-      <!-- Os três cards vêm do array "destaques" no script: lá ficam o link do vídeo e a capa de cada um -->
-      <div class="destaques-grade" id="destaques-grade"></div>
     </div>
   </section>
 
@@ -930,36 +953,24 @@ const metricas = [
   { valor: null, casas: 0, prefixo: "",  sufixo: "K", vazio: "00K",  rotulo: "seguidores no Instagram" } // TROQUE pelo número real
 ];
 
-// CONTEÚDOS DE DESTAQUE: três cards grandes com capa 9:16.
-// link: ONDE ENTRA O LINK DO VÍDEO. Link do YouTube roda aqui mesmo no card; outros links abrem em outra aba. Enquanto for "#", o card não sai da página.
-// capa: ONDE ENTRA A CAPA. Coloque o caminho da imagem (ex.: "imagens/capa-chile.jpg"). Enquanto for "", a capa vem do YouTube ou aparece o degradê.
+// CONTEÚDO DE DESTAQUE: o carrossel com o vídeo em foco no meio. Para incluir um vídeo, copie um bloco e troque os dados.
+// link: ONDE ENTRA O LINK DO VÍDEO (YouTube). Ele roda aqui mesmo no card.
+// capa: ONDE ENTRA A CAPA. Deixe "" para a capa vir do YouTube, ou coloque o caminho da imagem (ex.: "imagens/capa-lippi.jpg").
+// numero e rotulo: o resultado que aparece embaixo do vídeo (ex.: "+2,4M" e "views no reels"). Deixe "" para não mostrar.
 const destaques = [
   {
-    link: "#",            // COLE AQUI O LINK DO VÍDEO 01
-    capa: "",             // COLOQUE AQUI A CAPA DO VÍDEO 01 (formato 9:16)
-    numero: "+00K",       // TROQUE pelo número real
-    rotulo: "views no reels",
-    duracao: "0:30",
-    titulo: "Vídeo de viagem para a Norte Sul Chile",
-    contexto: "Escreva aqui uma linha de contexto sobre este vídeo."
+    titulo: "Roupas Lippi",
+    link: "https://youtube.com/shorts/iDXx3jYck6A",
+    capa: "",
+    numero: "",
+    rotulo: ""
   },
   {
-    link: "#",            // COLE AQUI O LINK DO VÍDEO 02
-    capa: "",             // COLOQUE AQUI A CAPA DO VÍDEO 02 (formato 9:16)
-    numero: "+00K",       // TROQUE pelo número real
-    rotulo: "views no reels",
-    duracao: "0:30",
-    titulo: "Estadia em família com a RQ Stay",
-    contexto: "Escreva aqui uma linha de contexto sobre este vídeo."
-  },
-  {
-    link: "#",            // COLE AQUI O LINK DO VÍDEO 03
-    capa: "",             // COLOQUE AQUI A CAPA DO VÍDEO 03 (formato 9:16)
-    numero: "+00K",       // TROQUE pelo número real
-    rotulo: "views no reels",
-    duracao: "0:30",
-    titulo: "Começo de viagem tranquilo com a Parksnet",
-    contexto: "Escreva aqui uma linha de contexto sobre este vídeo."
+    titulo: "Parksnet Bondinhos Aéreos",
+    link: "https://youtube.com/shorts/cZsW7BIBSvk",
+    capa: "",
+    numero: "",
+    rotulo: ""
   }
 ];
 
@@ -1075,9 +1086,6 @@ function capaDoVideo(v) {
   const id = idDoVideo(v.link);
   return id ? `https://i.ytimg.com/vi/${id}/oar2.jpg` : "";
 }
-function atributosLink(link) {
-  return link && link !== "#" ? `href="${esc(link)}" target="_blank" rel="noopener"` : `href="#destaques"`;
-}
 
 // Faixa dos logos: anda sem parar e sem buracos. Os logos se repetem até passar da largura da tela,
 // e uma volta completa é exatamente a largura de um grupo, então ela recomeça igualzinha.
@@ -1120,27 +1128,62 @@ $("metricas").innerHTML = metricas.map((m, i) =>
 ).join("");
 
 // Destaques
-$("destaques-grade").innerHTML = destaques.map((d, i) => {
-  const roda = idDoVideo(d.link);
-  const tag = roda ? "article" : "a";
-  const atributos = roda
-    ? `data-video="${esc(roda)}" data-titulo="${esc(d.titulo)}"`
-    : `${atributosLink(d.link)} aria-label="Assistir: ${esc(d.titulo)}, ${esc(d.numero)} ${esc(d.rotulo)}"`;
-  return `
-  <${tag} class="destaque revela" ${atributos}>
+// Com poucos vídeos, a lista se repete para sempre ter um vídeo de cada lado do que está em foco
+const destaquesComVideo = destaques.filter((d) => idDoVideo(d.link));
+const cartoesDestaque = [...destaquesComVideo];
+while (destaquesComVideo.length > 1 && cartoesDestaque.length < 5) cartoesDestaque.push(...destaquesComVideo);
+$("destaques-grade").innerHTML = cartoesDestaque.map((d, i) => `
+  <article class="destaque" data-video="${esc(idDoVideo(d.link))}" data-titulo="${esc(d.titulo)}">
+    <h3>${esc(d.titulo)}</h3>
     <div class="destaque-capa">
       ${htmlCapa({ capa: capaDoVideo(d) }, i, "capa do vídeo 9:16", "Capa do vídeo " + d.titulo)}
       <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
-      <span class="duracao" aria-hidden="true">${esc(d.duracao)}</span>
     </div>
-    <div class="destaque-info">
-      <div class="destaque-numero">${esc(d.numero)}</div>
-      <span class="destaque-rotulo">${esc(d.rotulo)}</span>
-      <h3>${esc(d.titulo)}</h3>
-      <p>${esc(d.contexto)}</p>
-    </div>
-  </${tag}>`;
-}).join("");
+    ${d.numero ? `<div class="destaque-dado"><span>${esc(d.rotulo)}</span><strong>${esc(d.numero)}</strong></div>` : ""}
+  </article>`).join("");
+
+const elementosDestaque = [...document.querySelectorAll(".destaque")];
+let destaqueAtivo = 0;
+function posicionaDestaques() {
+  const total = elementosDestaque.length;
+  elementosDestaque.forEach((el, i) => {
+    let d = (i - destaqueAtivo + total) % total;
+    if (d > total / 2) d -= total;
+    el.style.setProperty("--d", d);
+    el.classList.toggle("ativo", d === 0);
+    el.classList.toggle("distante", Math.abs(d) > 1);
+    el.setAttribute("aria-hidden", String(d !== 0));
+    const toque = el.querySelector(".toque");
+    if (toque) toque.tabIndex = d === 0 ? 0 : -1;
+  });
+}
+function mudaDestaque(passos) {
+  const total = elementosDestaque.length;
+  players.forEach((p) => p.para());
+  destaqueAtivo = (destaqueAtivo + passos + total) % total;
+  posicionaDestaques();
+}
+// Clicar em um vídeo do lado traz ele para o meio, sem começar a tocar
+elementosDestaque.forEach((el) => {
+  el.addEventListener("click", (e) => {
+    if (el.classList.contains("ativo")) return;
+    e.stopPropagation();
+    mudaDestaque(Number(el.style.getPropertyValue("--d")));
+  }, true);
+});
+$("destaque-anterior").addEventListener("click", () => mudaDestaque(-1));
+$("destaque-proximo").addEventListener("click", () => mudaDestaque(1));
+$("destaque-anterior").hidden = $("destaque-proximo").hidden = elementosDestaque.length < 2;
+// No celular também dá para arrastar para o lado
+let inicioToqueDestaque = null;
+$("destaques-palco").addEventListener("touchstart", (e) => { inicioToqueDestaque = e.changedTouches[0]; }, { passive: true });
+$("destaques-palco").addEventListener("touchend", (e) => {
+  if (!inicioToqueDestaque) return;
+  const dx = e.changedTouches[0].clientX - inicioToqueDestaque.clientX;
+  const dy = e.changedTouches[0].clientY - inicioToqueDestaque.clientY;
+  inicioToqueDestaque = null;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) mudaDestaque(dx < 0 ? 1 : -1);
+}, { passive: true });
 
 // Nichos: botões que levam até cada linha e linhas de vídeo que deslizam para o lado
 $("nichos-atalhos").innerHTML = nichos.map((n, i) =>
@@ -1361,6 +1404,7 @@ const observadorPlayers = "IntersectionObserver" in window
     }, { threshold: 0.2 })
   : { observe() {} };
 document.querySelectorAll("[data-video]").forEach(ligaPlayer);
+posicionaDestaques();
 
 // Serviços
 $("servicos-grade").innerHTML = servicos.map((s, i) => `
