@@ -150,7 +150,8 @@
   /* Imagem atrás da capa inteira. A faixa de degradê embaixo emenda a imagem com o fundo da seção seguinte. */
   .capa {
     padding: calc(var(--menu-altura) + 56px) 0 0;
-    background: linear-gradient(transparent 82%, var(--fundo) 100%), url("imagens/fundo-capa.jpg") center / cover no-repeat var(--fundo);
+    /* O primeiro degradê é um véu claro: quanto maior o último número (de 0 a 1), mais transparente a imagem parece */
+    background: linear-gradient(rgba(247, 242, 232, .58), rgba(247, 242, 232, .58)), linear-gradient(transparent 82%, var(--fundo) 100%), url("imagens/fundo-capa.jpg") center / cover no-repeat var(--fundo);
   }
   .capa-grade { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
   .capa-etiqueta {
