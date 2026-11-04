@@ -127,16 +127,22 @@
   .menu-logo { flex: none; display: block; }
   .menu-logo img { width: auto; height: 42px; }
   .menu-links { display: flex; align-items: center; gap: 18px; }
+  .menu-links .so-menu-fechado { display: none; }
+  .menu-direita { flex: none; display: flex; align-items: center; gap: 12px; }
+  .seletor-idioma { display: inline-flex; flex: none; padding: 3px; border: 1px solid var(--borda); border-radius: 999px; background: var(--branco); }
+  .seletor-idioma a { padding: 6px 10px; border-radius: 999px; color: var(--texto-suave); font-size: .72rem; font-weight: 700; letter-spacing: .06em; line-height: 1.2; text-decoration: none; transition: background .15s ease, color .15s ease; }
+  .seletor-idioma a:hover { color: var(--capri); }
+  .seletor-idioma a[aria-current="true"] { background: var(--capri); color: var(--branco); }
   .menu-links a:not(.menu-cta) {
     padding: 6px 2px; border-bottom: 2px solid transparent; text-decoration: none; color: var(--texto-suave);
-    font-weight: 600; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; transition: color .15s ease, border-color .15s ease;
+    font-weight: 600; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; transition: color .15s ease, border-color .15s ease;
   }
   .menu-links a:not(.menu-cta):hover { color: var(--capri); border-color: var(--capri); }
-  .menu-links a.menu-cta {
-    margin-left: 8px; padding: 14px 22px; border-radius: 4px; background: var(--capri); color: var(--branco);
+  a.menu-cta {
+    padding: 13px 18px; border-radius: 4px; background: var(--capri); color: var(--branco);
     font-weight: 700; font-size: .88rem; line-height: 1.2; text-decoration: none; white-space: nowrap; transition: background .15s ease;
   }
-  .menu-links a.menu-cta:hover { background: var(--terra); }
+  a.menu-cta:hover { background: var(--terra); }
   .menu-sanduiche {
     display: none; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--borda); background: transparent;
     align-items: center; justify-content: center; flex-direction: column; gap: 5px;
@@ -581,7 +587,7 @@
     .metricas { grid-template-columns: repeat(2, 1fr); }
     .contato-caixa { grid-template-columns: 1fr; padding: 40px; }
   }
-  @media (max-width: 1180px) {
+  @media (max-width: 1240px) {
     :root { --menu-altura: 96px; }
     .menu-barra { min-height: 60px; padding: 0 16px; }
     .menu-logo img { height: 34px; }
@@ -593,9 +599,14 @@
     }
     .menu-links.aberto { display: flex; }
     .menu-links a:not(.menu-cta) { padding: 13px 16px; border-bottom: 0; font-size: .82rem; }
-    .menu-links a.menu-cta { margin: 6px 0 0; text-align: center; }
+    .menu-links .so-menu-fechado { display: block; }
   }
   @media (max-width: 760px) {
+    .menu-direita { gap: 8px; }
+    .menu-direita .menu-cta { display: none; }
+    .menu-barra { gap: 10px; }
+    .menu-logo img { height: 28px; }
+    .seletor-idioma a { padding: 6px 7px; font-size: .68rem; letter-spacing: .02em; }
     .barra-topo { gap: 8px; padding: 6px 12px; }
     .barra-selo-longo, .barra-contagem, .barra-sep { display: none; }
     .barra-selo-curto { display: inline; }
@@ -674,10 +685,7 @@
   </div>
   <div class="menu-fundo">
     <nav class="menu-barra" aria-label="Menu principal">
-      <a class="menu-logo" href="#topo"><img src="imagens/marca/logo-ec.svg" alt="Família Entra Comigo, ir para o topo" width="221" height="42"></a>
-      <button class="menu-sanduiche" type="button" aria-expanded="false" aria-controls="menu-links" aria-label="Abrir menu">
-        <span></span><span></span><span></span>
-      </button>
+      <a class="menu-logo" href="#topo"><picture><source media="(max-width: 370px)" srcset="imagens/marca/icone-ec.svg"><img src="imagens/marca/logo-ec.svg" alt="Família Entra Comigo, ir para o topo" width="221" height="42"></picture></a>
       <div class="menu-links" id="menu-links">
         <a href="#sobre">Sobre</a>
         <a href="#destaques">Destaques</a>
@@ -685,8 +693,18 @@
         <a href="#servicos">Serviços</a>
         <a href="#processo">Processo</a>
         <a href="#numeros">Números</a>
-        <a href="#contato">Contato</a>
+        <a class="so-menu-fechado" href="#contato">Contato</a>
+      </div>
+      <div class="menu-direita">
+        <div class="seletor-idioma" role="group" aria-label="Escolher idioma">
+          <a href="?lang=pt" data-idioma="pt" hreflang="pt" lang="pt" aria-label="Português">PT</a>
+          <a href="?lang=en" data-idioma="en" hreflang="en" lang="en" aria-label="English">EN</a>
+          <a href="?lang=es" data-idioma="es" hreflang="es" lang="es" aria-label="Español">ES</a>
+        </div>
         <a class="menu-cta" href="#contato">Trabalhe com a gente</a>
+        <button class="menu-sanduiche" type="button" aria-expanded="false" aria-controls="menu-links" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
   </div>
@@ -959,6 +977,233 @@
 
 <script>
 /* =====================================================================
+   IDIOMAS: português, inglês e espanhol
+   O site é escrito em português. Esta lista diz como cada texto fica em inglês e em espanhol, nessa ordem.
+   Ao mudar um texto em português, mude também a chave aqui, senão ele aparece em português nos outros idiomas.
+   Também dá para abrir direto em um idioma pelo link: ?lang=en ou ?lang=es
+   ===================================================================== */
+const IDIOMAS = ["pt", "en", "es"];
+const idioma = (() => {
+  const pedido = new URLSearchParams(location.search).get("lang");
+  if (IDIOMAS.includes(pedido)) return pedido;
+  try {
+    const salvo = localStorage.getItem("idioma");
+    if (IDIOMAS.includes(salvo)) return salvo;
+  } catch (erro) { /* sem armazenamento, segue pelo idioma do navegador */ }
+  const navegador = String(navigator.language || "pt").slice(0, 2).toLowerCase();
+  return IDIOMAS.includes(navegador) ? navegador : "pt";
+})();
+const traducoes = {
+  // Página
+  "Família Entra Comigo · Mídia kit Creator Family": ["Família Entra Comigo · Family Creator Media Kit", "Família Entra Comigo · Media kit Family Creator"],
+  "Mídia kit da Família Entra Comigo: vídeos de viagens e restaurantes em família para marcas, com roteiro aprovado e prazo combinado no briefing.": ["Família Entra Comigo media kit: family travel and restaurant videos for brands, with an approved script and a deadline agreed in the briefing.", "Media kit de Família Entra Comigo: videos de viajes y restaurantes en familia para marcas, con guion aprobado y plazo acordado en el briefing."],
+  "Pular para o conteúdo": ["Skip to content", "Saltar al contenido"],
+  "Escolher idioma": ["Choose language", "Elegir idioma"],
+
+  // Barra de avisos
+  "Avisos e reserva de agenda": ["Notices and booking", "Avisos y reserva de agenda"],
+  "Reservar agenda pelo WhatsApp": ["Book your spot on WhatsApp", "Reservar agenda por WhatsApp"],
+  "reservar agenda →": ["book your spot →", "reservar agenda →"],
+  "AGENDA ABERTA": ["OPEN SCHEDULE", "AGENDA ABIERTA"],
+  "HOJE": ["TODAY", "HOY"],
+  "1 DIA": ["1 DAY", "1 DÍA"],
+  "{n} DIAS": ["{n} DAYS", "{n} DÍAS"],
+  "É hoje: {data}!": ["It's today: {data}!", "¡Es hoy: {data}!"],
+  "Falta 1 dia {prep} {data}": ["1 day to {data}", "Falta 1 día para {data}"],
+  "Faltam {n} dias {prep} {data}": ["{n} days to {data}", "Faltan {n} días para {data}"],
+  "agenda aberta para {mes}": ["schedule open for {mes}", "agenda abierta para {mes}"],
+  "reserve seus vídeos para {mes}": ["book your videos for {mes}", "reserva tus videos para {mes}"],
+  "vídeo para Instagram": ["video for Instagram", "video para Instagram"],
+  "vídeo para TikTok": ["video for TikTok", "video para TikTok"],
+  "vídeo para YouTube": ["video for YouTube", "video para YouTube"],
+  "vídeo para anúncios": ["video for ads", "video para anuncios"],
+  "Oi! Vi o mídia kit da Família Entra Comigo e quero reservar vídeos para {mes}.": ["Hi! I saw the Família Entra Comigo media kit and I want to book videos for {mes}.", "¡Hola! Vi el media kit de Família Entra Comigo y quiero reservar videos para {mes}."],
+  "Dia do Consumidor": ["Consumer Day", "Día del Consumidor"],
+  "Dia das Mães": ["Mother's Day", "Día de la Madre"],
+  "Dia dos Namorados": ["Valentine's Day", "Día de los Enamorados"],
+  "Dia dos Pais": ["Father's Day", "Día del Padre"],
+  "Dia das Crianças": ["Children's Day", "Día del Niño"],
+  "Natal": ["Christmas", "Navidad"],
+  "janeiro": ["January", "enero"], "fevereiro": ["February", "febrero"], "março": ["March", "marzo"], "abril": ["April", "abril"],
+  "maio": ["May", "mayo"], "junho": ["June", "junio"], "julho": ["July", "julio"], "agosto": ["August", "agosto"],
+  "setembro": ["September", "septiembre"], "outubro": ["October", "octubre"], "novembro": ["November", "noviembre"], "dezembro": ["December", "diciembre"],
+
+  // Menu
+  "Menu principal": ["Main menu", "Menú principal"],
+  "Família Entra Comigo, ir para o topo": ["Família Entra Comigo, go to top", "Família Entra Comigo, ir arriba"],
+  "Abrir menu": ["Open menu", "Abrir menú"],
+  "Fechar menu": ["Close menu", "Cerrar menú"],
+  "Sobre": ["About", "Sobre nosotros"],
+  "Destaques": ["Highlights", "Destacados"],
+  "Trabalhos": ["Work", "Trabajos"],
+  "Serviços": ["Services", "Servicios"],
+  "Processo": ["Process", "Proceso"],
+  "Números": ["Numbers", "Números"],
+  "Trabalhe com a gente": ["Work with us", "Trabaja con nosotros"],
+
+  // Capa
+  "Family Creator · Sua Cidade": ["Family Creator · Your City", "Family Creator · Tu Ciudad"],
+  "A gente viaja em família, descobre restaurantes e transforma cada passeio em vídeo que faz a sua marca ser lembrada e escolhida.": ["We travel as a family, discover restaurants and turn every outing into a video that makes your brand remembered and chosen.", "Viajamos en familia, descubrimos restaurantes y convertimos cada paseo en un video que hace que tu marca sea recordada y elegida."],
+  "falar com a gente": ["talk to us", "habla con nosotros"],
+  "ver os trabalhos": ["see our work", "ver los trabajos"],
+  "Foto da família com o cartão de embarque": ["Family photo with the boarding pass", "Foto de la familia con la tarjeta de embarque"],
+  "Espaço para a foto da família no formato 4:5": ["Space for the family photo in 4:5 format", "Espacio para la foto de la familia en formato 4:5"],
+  "foto da família 4:5": ["family photo 4:5", "foto de la familia 4:5"],
+  "Camada 01 · Foto": ["Layer 01 · Photo", "Capa 01 · Foto"],
+  "🍽️ Restaurantes": ["🍽️ Restaurants", "🍽️ Restaurantes"],
+  "Família ✌️": ["Family ✌️", "Familia ✌️"],
+  "viagens incríveis": ["amazing trips", "viajes increíbles"],
+  "Cartão de embarque": ["Boarding pass", "Tarjeta de embarque"],
+  "Passageiros": ["Passengers", "Pasajeros"],
+  "Pri, Cidinha e Marcus": ["Pri, Cidinha and Marcus", "Pri, Cidinha y Marcus"],
+  "Destino": ["Destination", "Destino"],
+  "Experiências incríveis": ["Amazing experiences", "Experiencias increíbles"],
+  "Marcas com quem já trabalhamos": ["Brands we have worked with", "Marcas con las que hemos trabajado"],
+  "vídeos entregues": ["videos delivered", "videos entregados"],
+  "marcas atendidas": ["brands served", "marcas atendidas"],
+  "países: Brasil e Chile": ["countries: Brazil and Chile", "países: Brasil y Chile"],
+  "seguidores no Instagram": ["Instagram followers", "seguidores en Instagram"],
+
+  // Sobre
+  "🎬 Gravando em família": ["🎬 Filming as a family", "🎬 Grabando en familia"],
+  "Sobre a gente": ["About us", "Sobre nosotros"],
+  'Prazer, a gente <span class="grifo">entra junto</span> com a sua marca': ['Nice to meet you, we <span class="grifo">come along</span> with your brand', 'Un placer, <span class="grifo">entramos junto</span> con tu marca'],
+  "Oi! Aqui é a Família Entra Comigo: Pri, Cidinha e Marcus. A gente ama pegar a estrada, descobrir lugar novo, sentar à mesa de um bom restaurante e mostrar tudo do jeito que acontece de verdade: mala cheia, prato na mesa e muita risada no caminho.": ["Hi! This is Família Entra Comigo: Pri, Cidinha and Marcus. We love hitting the road, discovering new places, sitting down at a good restaurant and showing it all just as it really happens: full suitcases, food on the table and lots of laughter along the way.", "¡Hola! Somos Família Entra Comigo: Pri, Cidinha y Marcus. Nos encanta salir a la carretera, descubrir lugares nuevos, sentarnos a la mesa de un buen restaurante y mostrarlo todo tal como sucede de verdad: maletas llenas, platos en la mesa y muchas risas en el camino."],
+  "É assim que a sua marca entra na nossa rotina, sem cara de anúncio, e chega direto em quem também viaja em família. Cada vídeo é pensado com carinho, do roteiro ao último corte.": ["That is how your brand becomes part of our routine, without feeling like an ad, and reaches people who also travel as a family. Every video is made with care, from the script to the final cut.", "Así es como tu marca entra en nuestra rutina, sin parecer un anuncio, y llega directo a quienes también viajan en familia. Cada video se piensa con cariño, del guion al último corte."],
+  "Roteiro aprovado antes de gravar": ["Script approved before filming", "Guion aprobado antes de grabar"],
+  "Uma rodada de ajuste inclusa": ["One round of revisions included", "Una ronda de ajustes incluida"],
+  "Entrega no prazo combinado no briefing": ["Delivery on the date agreed in the briefing", "Entrega en el plazo acordado en el briefing"],
+
+  // Destaques
+  'Conteúdo de <span class="grifo">destaque</span>': ['Featured <span class="grifo">content</span>', 'Contenido <span class="grifo">destacado</span>'],
+  "Toque no vídeo para assistir aqui mesmo.": ["Tap the video to watch it right here.", "Toca el video para verlo aquí mismo."],
+  "Alguns dos vídeos que a gente criou para as marcas parceiras. Use as setas para ver os outros.": ["Some of the videos we created for our partner brands. Use the arrows to see the others.", "Algunos de los videos que creamos para las marcas aliadas. Usa las flechas para ver los demás."],
+  "Vídeos em destaque": ["Featured videos", "Videos destacados"],
+  "Destaque anterior": ["Previous highlight", "Destacado anterior"],
+  "Próximo destaque": ["Next highlight", "Siguiente destacado"],
+  "Capa do vídeo ": ["Video cover: ", "Portada del video: "],
+  "capa do vídeo 9:16": ["video cover 9:16", "portada del video 9:16"],
+
+  // Nichos
+  "Trabalhos por nicho": ["Work by niche", "Trabajos por nicho"],
+  'Qual é o nicho da <span class="grifo">sua marca?</span>': ['What is <span class="grifo">your brand\'s</span> niche?', '¿Cuál es el nicho de <span class="grifo">tu marca?</span>'],
+  "Cada linha é um nicho. Toque no nome para ir direto a ele e deslize para o lado para ver mais vídeos.": ["Each row is a niche. Tap a name to go straight to it and swipe sideways to see more videos.", "Cada fila es un nicho. Toca el nombre para ir directo a él y desliza hacia el lado para ver más videos."],
+  "Ir para um nicho": ["Go to a niche", "Ir a un nicho"],
+  "Vídeos anteriores de ": ["Previous videos of ", "Videos anteriores de "],
+  "Próximos vídeos de ": ["Next videos of ", "Siguientes videos de "],
+  "Hotelaria & Hospedagem": ["Hotels & Lodging", "Hotelería y Hospedaje"],
+  "Hotéis, resorts, Airbnb, pousadas e chalés": ["Hotels, resorts, Airbnb, inns and chalets", "Hoteles, resorts, Airbnb, posadas y cabañas"],
+  "Lifestyle e Serviços de Viagem": ["Travel Lifestyle and Services", "Lifestyle y Servicios de Viaje"],
+  "Itens de viagem, moda e acessórios de viagem": ["Travel items, fashion and travel accessories", "Artículos de viaje, moda y accesorios de viaje"],
+  "Experiências e Turismo": ["Experiences and Tourism", "Experiencias y Turismo"],
+  "Agências de turismo, passeios, parques e atrações, locadoras": ["Travel agencies, tours, parks and attractions, rentals", "Agencias de turismo, paseos, parques y atracciones, alquileres"],
+  "Gastronomia": ["Food & Dining", "Gastronomía"],
+  "Restaurantes, cafés e experiências gastronômicas": ["Restaurants, cafés and food experiences", "Restaurantes, cafeterías y experiencias gastronómicas"],
+  "Tour em Lojas e Mercados": ["Store and Market Tours", "Tour por Tiendas y Mercados"],
+  "Lojas, shoppings e mercados para visitar, incluindo datas especiais": ["Stores, malls and markets to visit, including special dates", "Tiendas, centros comerciales y mercados para visitar, incluidas fechas especiales"],
+  "Utensílios de Casa e Decoração": ["Home Goods and Decor", "Artículos para el Hogar y Decoración"],
+  "Itens para a casa, cozinha, limpeza, iluminação e decoração": ["Items for the home, kitchen, cleaning, lighting and decor", "Artículos para el hogar, cocina, limpieza, iluminación y decoración"],
+  "Roupas Lippi": ["Lippi clothing", "Ropa Lippi"],
+  "Roupas Shein": ["Shein clothing", "Ropa Shein"],
+  "Restaurante em Gonçalves, MG": ["Restaurant in Gonçalves, MG", "Restaurante en Gonçalves, MG"],
+  "Passeio em Portillo": ["Portillo tour", "Paseo por Portillo"],
+  "Vinícola Undurraga": ["Undurraga Winery", "Viña Undurraga"],
+  "Fábrica Nugali": ["Nugali Factory", "Fábrica Nugali"],
+  "Queijos Laghi & Tosi": ["Laghi & Tosi cheeses", "Quesos Laghi & Tosi"],
+  "Inauguração Quiosque Vizzela": ["Vizzela kiosk opening", "Inauguración del quiosco Vizzela"],
+  "Loja Karsten": ["Karsten store", "Tienda Karsten"],
+  "Iluminação de Quarto GRM": ["GRM bedroom lighting", "Iluminación de dormitorio GRM"],
+  "Kit de panela Brinox": ["Brinox cookware set", "Juego de ollas Brinox"],
+  "Limpeza Pesada Piso Clean": ["Piso Clean deep cleaning", "Limpieza profunda Piso Clean"],
+
+  // Player
+  "Assistir: ": ["Watch: ", "Ver: "],
+  "Pausar: ": ["Pause: ", "Pausar: "],
+  "Continuar: ": ["Resume: ", "Continuar: "],
+  "Vídeo: ": ["Video: ", "Video: "],
+  "Não carregou. Toque para tentar de novo.": ["It did not load. Tap to try again.", "No cargó. Toca para intentarlo de nuevo."],
+  "Toque para ligar o som": ["Tap to turn the sound on", "Toca para activar el sonido"],
+
+  // Serviços
+  'Como podemos <span class="grifo">ajudar</span>': ['How we can <span class="grifo">help</span>', 'Cómo podemos <span class="grifo">ayudar</span>'],
+  "Escolha o formato ideal ou monte um combo com a gente. Criamos conteúdos autênticos que conectam marcas a famílias que amam viajar, viver experiências e descobrir novos lugares.": ["Choose the ideal format or build a bundle with us. We create authentic content that connects brands with families who love to travel, have new experiences and discover new places.", "Elige el formato ideal o arma un combo con nosotros. Creamos contenidos auténticos que conectan marcas con familias a las que les encanta viajar, vivir experiencias y descubrir nuevos lugares."],
+  "Vídeo UGC": ["UGC video", "Video UGC"],
+  "Vídeos verticais produzidos pela nossa família, com roteiro alinhado e aprovado pela marca, mostrando produtos, serviços e experiências de forma natural e envolvente.": ["Vertical videos produced by our family, with a script aligned with and approved by the brand, showing products, services and experiences in a natural and engaging way.", "Videos verticales producidos por nuestra familia, con guion alineado y aprobado por la marca, que muestran productos, servicios y experiencias de forma natural y atractiva."],
+  "Observação: o conteúdo UGC é produzido para a marca utilizar em seus próprios canais e não é publicado automaticamente no perfil da nossa família. Para publicação no nosso perfil, temos a opção de publicidade.": ["Note: UGC content is produced for the brand to use on its own channels and is not automatically published on our family's profile. For publication on our profile, we offer the advertising option.", "Nota: el contenido UGC se produce para que la marca lo use en sus propios canales y no se publica automáticamente en el perfil de nuestra familia. Para publicar en nuestro perfil, tenemos la opción de publicidad."],
+  "Publicidade no nosso perfil": ["Advertising on our profile", "Publicidad en nuestro perfil"],
+  "Apresentamos sua marca à nossa comunidade por meio de Reels, Stories ou outros formatos, compartilhando nossa experiência de forma espontânea e conectada ao nosso estilo de vida.": ["We introduce your brand to our community through Reels, Stories or other formats, sharing our experience in a spontaneous way that fits our lifestyle.", "Presentamos tu marca a nuestra comunidad por medio de Reels, Stories u otros formatos, compartiendo nuestra experiencia de forma espontánea y conectada con nuestro estilo de vida."],
+  "Conteúdo para anúncios": ["Content for ads", "Contenido para anuncios"],
+  "Vídeos criativos com ganchos estratégicos, demonstração de produtos e experiências reais, pensados para campanhas de tráfego pago e anúncios nas plataformas digitais.": ["Creative videos with strategic hooks, product demonstrations and real experiences, designed for paid traffic campaigns and ads on digital platforms.", "Videos creativos con ganchos estratégicos, demostración de productos y experiencias reales, pensados para campañas de tráfico pago y anuncios en plataformas digitales."],
+  "Fotos lifestyle": ["Lifestyle photos", "Fotos lifestyle"],
+  "Fotografias espontâneas e profissionais da nossa família utilizando produtos, conhecendo destinos, aproveitando hospedagens ou vivendo experiências. Imagens com contexto real e conexão.": ["Spontaneous, professional photos of our family using products, visiting destinations, enjoying stays or living experiences. Images with real context and connection.", "Fotografías espontáneas y profesionales de nuestra familia usando productos, conociendo destinos, disfrutando de hospedajes o viviendo experiencias. Imágenes con contexto real y conexión."],
+  "Cobertura de experiências": ["Experience coverage", "Cobertura de experiencias"],
+  "Transformamos visitas, hospedagens, passeios e experiências gastronômicas em conteúdos que despertam o desejo de conhecer. Ideal para hotéis, restaurantes, destinos turísticos e atrações.": ["We turn visits, stays, tours and food experiences into content that makes people want to go. Ideal for hotels, restaurants, tourist destinations and attractions.", "Convertimos visitas, hospedajes, paseos y experiencias gastronómicas en contenidos que despiertan las ganas de conocer. Ideal para hoteles, restaurantes, destinos turísticos y atracciones."],
+  "Unboxing e recebidos": ["Unboxing and gifted products", "Unboxing y productos recibidos"],
+  "Apresentamos produtos desde o primeiro contato, mostrando detalhes, funcionalidades e nossas impressões de maneira leve, verdadeira e próxima.": ["We present products from the very first moment, showing details, features and our impressions in a light, honest and personal way.", "Presentamos productos desde el primer contacto, mostrando detalles, funciones y nuestras impresiones de manera ligera, verdadera y cercana."],
+  "Pacote mensal": ["Monthly package", "Paquete mensual"],
+  "Uma parceria contínua com produção de conteúdos ao longo do mês, incluindo vídeos, fotos e formatos combinados em um calendário estratégico para manter sua marca presente e relevante.": ["An ongoing partnership with content produced throughout the month, including videos, photos and agreed formats in a strategic calendar to keep your brand present and relevant.", "Una alianza continua con producción de contenidos a lo largo del mes, que incluye videos, fotos y formatos acordados en un calendario estratégico para mantener tu marca presente y relevante."],
+
+  // Processo
+  'Como a gente <span class="grifo">trabalha</span>': ['How we <span class="grifo">work</span>', 'Cómo <span class="grifo">trabajamos</span>'],
+  "Do briefing à entrega, você sabe exatamente o que esperar.": ["From briefing to delivery, you know exactly what to expect.", "Del briefing a la entrega, sabes exactamente qué esperar."],
+  "Briefing": ["Briefing", "Briefing"],
+  "A gente entende o produto, o público e o objetivo do vídeo: orgânico ou anúncio.": ["We get to know the product, the audience and the goal of the video: organic or ads.", "Entendemos el producto, el público y el objetivo del video: orgánico o anuncio."],
+  "Uso": ["Usage", "Uso"],
+  "Combinamos onde e por quanto tempo o vídeo vai rodar: anúncio ou site, caso aplicável.": ["We agree on where and for how long the video will run: ads or website, if applicable.", "Acordamos dónde y por cuánto tiempo se usará el video: anuncio o sitio web, si corresponde."],
+  "Roteiro": ["Script", "Guion"],
+  "Enviamos gancho, falas e cenas para você aprovar antes de a gente gravar.": ["We send the hook, lines and scenes for you to approve before we film.", "Enviamos gancho, diálogos y escenas para que apruebes antes de grabar."],
+  "Gravação": ["Filming", "Grabación"],
+  "Captação vertical, com variações de gancho quando o vídeo for para anúncio.": ["Vertical filming, with hook variations when the video is for ads.", "Grabación vertical, con variaciones de gancho cuando el video sea para anuncios."],
+  "Entrega": ["Delivery", "Entrega"],
+  "No prazo combinado no briefing, com uma rodada de ajuste inclusa.": ["On the date agreed in the briefing, with one round of revisions included.", "En el plazo acordado en el briefing, con una ronda de ajustes incluida."],
+  "Começar pelo briefing →": ["Start with the briefing →", "Empezar por el briefing →"],
+
+  // Números e depoimentos
+  "Números e depoimentos": ["Numbers and testimonials", "Números y testimonios"],
+  'O que os números e as marcas <span class="grifo">contam</span>': ['What the numbers and brands <span class="grifo">say</span>', 'Lo que los números y las marcas <span class="grifo">cuentan</span>'],
+  "Resultados de campanha": ["Campaign results", "Resultados de campaña"],
+  "Resultado da campanha": ["Campaign result", "Resultado de la campaña"],
+  "Conte aqui o que a campanha entregou e em quanto tempo.": ["Describe here what the campaign delivered and how quickly.", "Cuenta aquí qué entregó la campaña y en cuánto tiempo."],
+  "O que dizem sobre o nosso trabalho": ["What they say about our work", "Lo que dicen sobre nuestro trabajo"],
+  "Cole aqui o depoimento do cliente, em duas ou três frases.": ["Paste the client's testimonial here, in two or three sentences.", "Pega aquí el testimonio del cliente, en dos o tres frases."],
+
+  // Contato
+  "Contato": ["Contact", "Contacto"],
+  'Bora criar <span class="grifo">juntos?</span>': ['Shall we create <span class="grifo">together?</span>', '¿Creamos <span class="grifo">juntos?</span>'],
+  "Conta um pouco sobre a sua marca e o que você precisa. A gente responde rapidinho.": ["Tell us a little about your brand and what you need. We reply quickly.", "Cuéntanos un poco sobre tu marca y lo que necesitas. Respondemos rápido."],
+  "Seu nome": ["Your name", "Tu nombre"],
+  "Seu e-mail": ["Your email", "Tu correo"],
+  "Mensagem": ["Message", "Mensaje"],
+  "Conte sobre a sua marca, o produto e o prazo.": ["Tell us about your brand, the product and the deadline.", "Cuéntanos sobre tu marca, el producto y el plazo."],
+  "Enviar mensagem": ["Send message", "Enviar mensaje"],
+  "Mensagem recebida!": ["Message received!", "¡Mensaje recibido!"],
+  "Obrigada por chamar a gente. A resposta chega no seu e-mail em breve. Se for urgente, fala com a gente no WhatsApp.": ["Thank you for reaching out. Our reply will reach your email soon. If it is urgent, talk to us on WhatsApp.", "Gracias por escribirnos. La respuesta llegará pronto a tu correo. Si es urgente, háblanos por WhatsApp."],
+  "E-mail": ["Email", "Correo"],
+
+  // Rodapé e card de captura
+  "Redes sociais": ["Social media", "Redes sociales"],
+  "Família Entra Comigo. Todos os direitos reservados.": ["Família Entra Comigo. All rights reserved.", "Família Entra Comigo. Todos los derechos reservados."],
+  "Fechar": ["Close", "Cerrar"],
+  "Quer meu mídia kit completo?": ["Want our full media kit?", "¿Quieres nuestro media kit completo?"],
+  "Deixe seu nome e e-mail que a gente manda tudo, com valores e pacotes.": ["Leave your name and email and we will send everything, with prices and packages.", "Déjanos tu nombre y correo y te enviamos todo, con precios y paquetes."],
+  "Nome": ["Name", "Nombre"],
+  "Quero receber": ["Send it to me", "Quiero recibirlo"],
+  "Combinado!": ["All set!", "¡Listo!"],
+  "O mídia kit completo vai chegar no seu e-mail.": ["The full media kit will reach your email.", "El media kit completo llegará a tu correo."]
+};
+// Os textos provisórios numerados seguem o mesmo padrão
+for (let n = 1; n <= 4; n++) {
+  traducoes[`Marca 0${n}`] = [`Brand 0${n}`, `Marca 0${n}`];
+  traducoes[`Cliente 0${n}`] = [`Client 0${n}`, `Cliente 0${n}`];
+  traducoes[`Empresa do Cliente 0${n}`] = [`Client 0${n}'s company`, `Empresa del Cliente 0${n}`];
+}
+function t(textoEmPortugues) {
+  if (idioma === "pt") return textoEmPortugues;
+  const traducao = traducoes[textoEmPortugues];
+  return traducao ? traducao[idioma === "en" ? 0 : 1] : textoEmPortugues;
+}
+
+/* =====================================================================
    DADOS DO MÍDIA KIT: edite aqui, sem mexer no HTML
    ===================================================================== */
 
@@ -1217,10 +1462,10 @@ const destaquesComVideo = destaques.filter((d) => idDoVideo(d.link));
 const cartoesDestaque = [...destaquesComVideo];
 while (destaquesComVideo.length > 1 && cartoesDestaque.length < 5) cartoesDestaque.push(...destaquesComVideo);
 $("destaques-grade").innerHTML = cartoesDestaque.map((d, i) => `
-  <article class="destaque" data-video="${esc(idDoVideo(d.link))}" data-titulo="${esc(d.titulo)}">
+  <article class="destaque" data-video="${esc(idDoVideo(d.link))}" data-titulo="${esc(t(d.titulo))}">
     <h3>${esc(d.titulo)}</h3>
     <div class="destaque-capa">
-      ${htmlCapa({ capa: capaDoVideo(d) }, i, "capa do vídeo 9:16", "Capa do vídeo " + d.titulo)}
+      ${htmlCapa({ capa: capaDoVideo(d) }, i, "capa do vídeo 9:16", t("Capa do vídeo ") + t(d.titulo))}
       <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
     </div>
     ${d.numero ? `<div class="destaque-dado"><span>${esc(d.rotulo)}</span><strong>${esc(d.numero)}</strong></div>` : ""}
@@ -1281,13 +1526,13 @@ $("nichos-lista").innerHTML = nichos.map((n, i) => `
         <p>${esc(n.descricao)}</p>
       </div>
       <div class="nicho-setas">
-        <button type="button" class="nicho-seta" data-direcao="-1" aria-label="Vídeos anteriores de ${esc(n.nome)}">←</button>
-        <button type="button" class="nicho-seta" data-direcao="1" aria-label="Próximos vídeos de ${esc(n.nome)}">→</button>
+        <button type="button" class="nicho-seta" data-direcao="-1" aria-label="${esc(t("Vídeos anteriores de ") + t(n.nome))}">←</button>
+        <button type="button" class="nicho-seta" data-direcao="1" aria-label="${esc(t("Próximos vídeos de ") + t(n.nome))}">→</button>
       </div>
     </div>
     <div class="nicho-trilho">
       ${n.videos.map((v) => `
-      <div class="video-card" data-video="${esc(idDoVideo(v.link))}" data-titulo="${esc(v.titulo)}, ${esc(v.marca)}">
+      <div class="video-card" data-video="${esc(idDoVideo(v.link))}" data-titulo="${esc(t(v.titulo))}, ${esc(v.marca)}">
         <img src="${esc(capaDoVideo(v))}" alt="" width="270" height="480" loading="lazy" decoding="async">
         <span class="video-marca">${esc(v.marca)}</span>
         <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1b2b3d"><path d="M6 4l14 8-14 8z"/></svg></span>
@@ -1337,7 +1582,7 @@ function ligaPlayer(el) {
   const botao = document.createElement("button");
   botao.type = "button";
   botao.className = "toque";
-  botao.setAttribute("aria-label", "Assistir: " + titulo);
+  botao.setAttribute("aria-label", t("Assistir: ") + titulo);
   const aviso = document.createElement("span");
   aviso.className = "video-aviso";
   aviso.setAttribute("role", "status");
@@ -1364,21 +1609,21 @@ function ligaPlayer(el) {
     estado = -1; tempo = duracao = 0;
     capa.classList.remove("tocando", "carregando");
     aviso.textContent = "";
-    botao.setAttribute("aria-label", "Assistir: " + titulo);
+    botao.setAttribute("aria-label", t("Assistir: ") + titulo);
   }
   function esperaFalha() {
     clearTimeout(timerFalha);
-    timerFalha = setTimeout(() => { para(); aviso.textContent = "Não carregou. Toque para tentar de novo."; }, 15000);
+    timerFalha = setTimeout(() => { para(); aviso.textContent = t("Não carregou. Toque para tentar de novo."); }, 15000);
   }
   function abre(comecaMudo) {
     players.forEach((p) => p.para());
     querTocar = true;
     mudo = comecaMudo;
     capa.classList.add("carregando");
-    botao.setAttribute("aria-label", "Pausar: " + titulo);
+    botao.setAttribute("aria-label", t("Pausar: ") + titulo);
     iframe = document.createElement("iframe");
     iframe.className = "player-iframe";
-    iframe.title = "Vídeo: " + titulo;
+    iframe.title = t("Vídeo: ") + titulo;
     iframe.tabIndex = -1;
     iframe.allow = "autoplay; encrypted-media";
     iframe.referrerPolicy = "strict-origin-when-cross-origin";
@@ -1408,7 +1653,7 @@ function ligaPlayer(el) {
     clearTimeout(timerFalha);
     capa.classList.remove("tocando", "carregando");
     aviso.textContent = "";
-    botao.setAttribute("aria-label", "Continuar: " + titulo);
+    botao.setAttribute("aria-label", t("Continuar: ") + titulo);
   }
   function continua() {
     querTocar = true;
@@ -1416,7 +1661,7 @@ function ligaPlayer(el) {
     capa.classList.add("carregando");
     enviar("playVideo");
     esperaFalha();
-    botao.setAttribute("aria-label", "Pausar: " + titulo);
+    botao.setAttribute("aria-label", t("Pausar: ") + titulo);
   }
   botao.addEventListener("click", () => {
     if (!iframe) { aviso.textContent = ""; abre(!temMouse); }
@@ -1467,7 +1712,7 @@ function ligaPlayer(el) {
           enviar("setVolume", [100]);
         }
         if (tentouSom && info.muted === false) mudo = false;
-        aviso.textContent = mudo ? "Toque para ligar o som" : "";
+        aviso.textContent = mudo ? t("Toque para ligar o som") : "";
       }
       // Alguns celulares pausam o vídeo quando o som é ligado sem um toque: volta a rodar sem som e o aviso pede o toque
       if (querTocar && estado === 2 && tentouSom) {
@@ -1543,20 +1788,20 @@ function montaBarraTopo() {
   const dentro = faltam <= barraTopo.janelaDias;
   // Até o dia 10 a agenda fala do mês atual; depois, do próximo
   const numeroMes = diaHoje <= 10 ? mesHoje : (mesHoje % 12) + 1;
-  const nomeMes = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"][numeroMes - 1];
-  const nomeData = proxima.nome;
-  const selo = dentro ? nomeData.toUpperCase() : "AGENDA ABERTA";
-  const sufixoSelo = faltam === 0 ? "HOJE" : (faltam === 1 ? "1 DIA" : `${faltam} DIAS`);
+  const nomeMes = t(["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"][numeroMes - 1]);
+  const nomeData = t(proxima.nome);
+  const preenche = (texto) => t(texto).replace("{n}", faltam).replace("{prep}", proxima.prep).replace("{data}", nomeData).replace("{mes}", nomeMes);
+  const selo = dentro ? nomeData.toUpperCase() : t("AGENDA ABERTA");
+  const sufixoSelo = preenche(faltam === 0 ? "HOJE" : (faltam === 1 ? "1 DIA" : "{n} DIAS"));
   $("barra-selo-longo").textContent = selo;
   $("barra-selo-curto").textContent = dentro ? `${selo} · ${sufixoSelo}` : selo;
-  $("barra-contagem").textContent = !dentro ? "" : faltam === 0 ? `É hoje: ${nomeData}!`
-    : faltam === 1 ? `Falta 1 dia ${proxima.prep} ${nomeData}` : `Faltam ${faltam} dias ${proxima.prep} ${nomeData}`;
+  $("barra-contagem").textContent = !dentro ? "" : preenche(faltam === 0 ? "É hoje: {data}!" : (faltam === 1 ? "Falta 1 dia {prep} {data}" : "Faltam {n} dias {prep} {data}"));
   $("barra-contagem").hidden = !dentro;
   $("barra-sep").hidden = !dentro;
   $("barra-msgs").innerHTML = barraTopo.mensagens.map((m, i) =>
-    `<span class="barra-msg${i === 0 ? " ativa" : ""}">${esc(m.replace("{mes}", nomeMes).replace("{data}", nomeData))}</span>`
+    `<span class="barra-msg${i === 0 ? " ativa" : ""}">${esc(preenche(m))}</span>`
   ).join("");
-  $("barra-link").href = `https://wa.me/${barraTopo.whatsapp}?text=${encodeURIComponent(barraTopo.textoWhatsapp.replace("{mes}", nomeMes))}`;
+  $("barra-link").href = `https://wa.me/${barraTopo.whatsapp}?text=${encodeURIComponent(preenche(barraTopo.textoWhatsapp))}`;
   if (reduzMovimento) return;
   const itens = $("barra-msgs").children;
   let atual = 0;
@@ -1578,13 +1823,13 @@ const linksMenu = $("menu-links");
 function fechaMenu() {
   linksMenu.classList.remove("aberto");
   botaoMenu.setAttribute("aria-expanded", "false");
-  botaoMenu.setAttribute("aria-label", "Abrir menu");
+  botaoMenu.setAttribute("aria-label", t("Abrir menu"));
 }
 botaoMenu.addEventListener("click", () => {
   const abre = !linksMenu.classList.contains("aberto");
   linksMenu.classList.toggle("aberto", abre);
   botaoMenu.setAttribute("aria-expanded", String(abre));
-  botaoMenu.setAttribute("aria-label", abre ? "Fechar menu" : "Abrir menu");
+  botaoMenu.setAttribute("aria-label", t(abre ? "Fechar menu" : "Abrir menu"));
 });
 linksMenu.addEventListener("click", (e) => { if (e.target.closest("a")) fechaMenu(); });
 document.addEventListener("keydown", (e) => {
@@ -1668,6 +1913,49 @@ function tecladoCaptura(e) {
 $("captura-fechar").addEventListener("click", fechaCaptura);
 captura.addEventListener("click", (e) => { if (e.target === captura) fechaCaptura(); });
 if (!jaViu()) setTimeout(abreCaptura, 7000);
+
+// Idiomas: traduz a página toda (o HTML e o que os dados já montaram) e liga o seletor PT, EN e ES
+function traduzPagina() {
+  document.documentElement.lang = idioma === "pt" ? "pt-BR" : idioma;
+  document.title = t("Família Entra Comigo · Mídia kit Creator Family");
+  const descricao = document.querySelector('meta[name="description"]');
+  descricao.content = t("Mídia kit da Família Entra Comigo: vídeos de viagens e restaurantes em família para marcas, com roteiro aprovado e prazo combinado no briefing.");
+  document.querySelectorAll("h2.titulo-secao").forEach((titulo) => { titulo.innerHTML = t(titulo.innerHTML); });
+  const textos = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nosDeTexto = [];
+  while (textos.nextNode()) nosDeTexto.push(textos.currentNode);
+  nosDeTexto.forEach((no) => {
+    if (no.parentElement.closest("script, style")) return;
+    const original = no.nodeValue.trim();
+    if (original && t(original) !== original) no.nodeValue = no.nodeValue.replace(original, t(original));
+  });
+  ["aria-label", "alt", "placeholder"].forEach((atributo) => {
+    document.querySelectorAll(`[${atributo}]`).forEach((el) => el.setAttribute(atributo, t(el.getAttribute(atributo))));
+  });
+}
+if (idioma !== "pt") traduzPagina();
+document.querySelectorAll(".seletor-idioma a").forEach((link) => {
+  const escolhido = link.dataset.idioma;
+  if (escolhido === idioma) link.setAttribute("aria-current", "true");
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    try {
+      localStorage.setItem("idioma", escolhido);
+      sessionStorage.setItem("idioma_rolagem", String(window.scrollY));
+    } catch (erro) { /* tudo bem: o idioma também vai no endereço */ }
+    const endereco = new URL(location.href);
+    endereco.searchParams.set("lang", escolhido);
+    location.href = endereco.href;
+  });
+});
+// Ao trocar de idioma, volta para o mesmo ponto da página
+try {
+  const rolagem = sessionStorage.getItem("idioma_rolagem");
+  if (rolagem !== null) {
+    sessionStorage.removeItem("idioma_rolagem");
+    window.scrollTo({ top: Number(rolagem), behavior: "auto" });
+  }
+} catch (erro) { /* tudo bem */ }
 </script>
 </body>
 </html>
