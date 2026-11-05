@@ -519,6 +519,8 @@
 
   .formulario { display: grid; gap: 16px; align-content: start; }
   .formulario[hidden] { display: none; }
+  .form-erro { margin: 0; font-size: .88rem; font-weight: 700; }
+  .form-erro[hidden] { display: none; }
   .campo-dupla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .campo select {
     width: 100%; border: 1.5px solid var(--borda); border-radius: 14px; padding: 14px 40px 14px 16px; font-size: 1rem; cursor: pointer;
@@ -899,9 +901,6 @@
         </div>
 
         <div>
-          <!-- O formulário mostra a confirmação na própria tela. Ele ainda não envia para lugar nenhum:
-               para receber as mensagens no e-mail, ligue a um serviço de formulário (por exemplo Formspree)
-               na função do envio, marcada como ENVIO DO FORMULÁRIO no script. -->
           <form class="formulario" id="form-contato">
             <div class="campo">
               <label for="contato-nome">Nome</label>
@@ -924,12 +923,12 @@
                 <label for="contato-servico">O que você precisa?</label>
                 <select id="contato-servico" name="servico">
                   <option value="">Selecione</option>
-                  <option>Vídeo UGC</option>
-                  <option>Publicidade no nosso perfil</option>
-                  <option>Conteúdo para anúncios</option>
-                  <option>Fotos lifestyle</option>
-                  <option>Unboxing e recebidos</option>
-                  <option>Pacote mensal</option>
+                  <option value="Vídeo UGC">Vídeo UGC</option>
+                  <option value="Publicidade no nosso perfil">Publicidade no nosso perfil</option>
+                  <option value="Conteúdo para anúncios">Conteúdo para anúncios</option>
+                  <option value="Fotos lifestyle">Fotos lifestyle</option>
+                  <option value="Unboxing e recebidos">Unboxing e recebidos</option>
+                  <option value="Pacote mensal">Pacote mensal</option>
                 </select>
               </div>
               <div class="campo">
@@ -979,7 +978,6 @@
     <div class="captura-corpo">
       <h2 id="titulo-captura">Quer meu mídia kit completo?</h2>
       <p>Deixe seu nome e e-mail que a gente manda tudo, com valores e pacotes.</p>
-      <!-- Assim como o contato, este formulário ainda não envia para lugar nenhum: veja ENVIO DO FORMULÁRIO no script -->
       <form class="formulario" id="form-captura">
         <div class="campo">
           <label for="captura-nome">Nome</label>
@@ -1211,6 +1209,7 @@ const traducoes = {
   "Produto, onde o vídeo vai rodar (orgânico, anúncio, site) e qualquer referência que você goste...": ["Product, where the video will run (organic, ads, website) and any reference you like...", "Producto, dónde se usará el video (orgánico, anuncio, sitio web) y cualquier referencia que te guste..."],
   "Enviar mensagem": ["Send message", "Enviar mensaje"],
   "Mensagem recebida!": ["Message received!", "¡Mensaje recibido!"],
+  "Não foi possível enviar agora. Tente de novo ou fale com a gente pelo WhatsApp: (11) 99697-5223.": ["We could not send it right now. Try again or talk to us on WhatsApp: +55 11 99697-5223.", "No se pudo enviar ahora. Inténtalo de nuevo o háblanos por WhatsApp: +55 11 99697-5223."],
   "Obrigada por chamar a gente. A resposta chega no seu e-mail em breve. Se for urgente, fala com a gente no WhatsApp.": ["Thank you for reaching out. Our reply will reach your email soon. If it is urgent, talk to us on WhatsApp.", "Gracias por escribirnos. La respuesta llegará pronto a tu correo. Si es urgente, háblanos por WhatsApp."],
   "E-mail": ["Email", "Correo"],
 
@@ -1238,6 +1237,10 @@ function t(textoEmPortugues) {
 /* =====================================================================
    DADOS DO MÍDIA KIT: edite aqui, sem mexer no HTML
    ===================================================================== */
+
+// SUPABASE: o mesmo projeto do portfólio. Esta é a chave PÚBLICA, feita para ficar no site: quem protege os dados são as regras das tabelas.
+const SUPABASE_URL = "https://nxyhhmyybibruqebovuf.supabase.co";
+const SUPABASE_CHAVE = "sb_publishable_Nuh1Fsp_8gElsYezVstazw_JRgbnPea";
 
 // BARRA DE AVISOS: a data especial e os dias que faltam são calculados sozinhos, no horário de São Paulo.
 // Em "mensagens", {mes} vira o mês da agenda e {data} vira o nome da próxima data especial.
@@ -1293,11 +1296,12 @@ const metricas = [
   { valor: null, casas: 0, prefixo: "",  sufixo: "K", vazio: "00K",  rotulo: "seguidores no Instagram" } // TROQUE pelo número real
 ];
 
-// CONTEÚDO DE DESTAQUE: o carrossel com o vídeo em foco no meio. Para incluir um vídeo, copie um bloco e troque os dados.
+// CÓPIA DE SEGURANÇA dos vídeos: o site usa o que está no painel (aba Mídia Kit E.C) e só usa estas listas se o banco não responder.
+// CONTEÚDO DE DESTAQUE: o carrossel com o vídeo em foco no meio.
 // link: ONDE ENTRA O LINK DO VÍDEO (YouTube). Ele roda aqui mesmo no card.
 // capa: ONDE ENTRA A CAPA. Deixe "" para a capa vir do YouTube, ou coloque o caminho da imagem (ex.: "imagens/capa-lippi.jpg").
 // numero e rotulo: o resultado que aparece embaixo do vídeo (ex.: "+2,4M" e "views no reels"). Deixe "" para não mostrar.
-const destaques = [
+let destaques = [
   {
     titulo: "Roupas Lippi",
     link: "https://youtube.com/shorts/iDXx3jYck6A",
@@ -1324,7 +1328,7 @@ const destaques = [
 // NICHOS: cada nicho vira um botão e uma linha de vídeos que desliza para o lado.
 // Para incluir um vídeo, adicione uma linha com a marca, o título e o link do YouTube.
 // A capa vertical vem sozinha do YouTube. Para usar outra, acrescente capa: "caminho/da/imagem.jpg" na linha.
-const nichos = [
+let nichos = [
   {
     nome: "Hotelaria & Hospedagem",
     descricao: "Hotéis, resorts, Airbnb, pousadas e chalés",
@@ -1515,7 +1519,8 @@ if ($("metricas")) $("metricas").innerHTML = metricas.map((m, i) =>
   `<div class="metrica revela"><strong data-metrica="${i}">${esc(textoFinal(m))}</strong><span>${esc(m.rotulo)}</span><div class="barra" aria-hidden="true"><i></i></div></div>`
 ).join("");
 
-// Destaques
+// Destaques e nichos: montados depois de buscar os vídeos no banco
+function montaVitrine() {
 // Com poucos vídeos, a lista se repete para sempre ter um vídeo de cada lado do que está em foco
 const destaquesComVideo = destaques.filter((d) => idDoVideo(d.link));
 const cartoesDestaque = [...destaquesComVideo];
@@ -1619,6 +1624,9 @@ document.querySelectorAll(".nicho").forEach((nicho) => {
   window.addEventListener("resize", atualiza);
   atualiza();
 });
+document.querySelectorAll("[data-video]").forEach(ligaPlayer);
+posicionaDestaques();
+}
 
 // Player: o vídeo roda dentro do próprio card, com som. Tocar de novo pausa e só um vídeo roda por vez.
 // Quando o vídeo acaba ou é pausado, a capa volta, para nunca aparecer a tela final do YouTube.
@@ -1791,8 +1799,6 @@ const observadorPlayers = "IntersectionObserver" in window
       entradas.forEach((ent) => { if (!ent.isIntersecting && ent.target.playerApi && ent.target.playerApi.estaRodando()) ent.target.playerApi.pausa(); });
     }, { threshold: 0.2 })
   : { observe() {} };
-document.querySelectorAll("[data-video]").forEach(ligaPlayer);
-posicionaDestaques();
 
 // Serviços
 $("servicos-grade").innerHTML = servicos.map((s, i) => `
@@ -1911,34 +1917,66 @@ function anima(el) {
 }
 
 // Entrada suave ao rolar e disparo dos contadores
+let observadorRevela = null;
+function observaRevela() {
+  document.querySelectorAll(".revela:not(.visivel)").forEach((el) => (observadorRevela ? observadorRevela.observe(el) : el.classList.add("visivel")));
+}
 if ("IntersectionObserver" in window) {
-  const observador = new IntersectionObserver((entradas) => {
+  observadorRevela = new IntersectionObserver((entradas) => {
     entradas.forEach((ent) => {
       if (!ent.isIntersecting) return;
       const el = ent.target;
       el.classList.add("visivel");
       el.querySelectorAll("[data-metrica]").forEach(anima);
       if (el.classList.contains("metrica")) el.classList.add("contou");
-      observador.unobserve(el);
+      observadorRevela.unobserve(el);
     });
   }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
-  document.querySelectorAll(".revela").forEach((el) => observador.observe(el));
+  observaRevela();
 } else {
   document.querySelectorAll(".revela").forEach((el) => el.classList.add("visivel"));
 }
 
-// ENVIO DO FORMULÁRIO: hoje só mostra a confirmação na tela.
-// Para receber de verdade, troque o corpo desta função por um fetch para o seu serviço de formulário.
-function enviaFormulario(form, confirmacao) {
-  form.addEventListener("submit", (e) => {
+// ENVIO DOS FORMULÁRIOS: grava no Supabase. Os contatos aparecem no painel, na aba Mídia Kit E.C.
+async function gravaNoBanco(tabela, dados) {
+  const resposta = await fetch(`${SUPABASE_URL}/rest/v1/${tabela}`, {
+    method: "POST",
+    headers: { apikey: SUPABASE_CHAVE, "Content-Type": "application/json", Prefer: "return=minimal" },
+    body: JSON.stringify(dados),
+    keepalive: true
+  });
+  if (!resposta.ok) throw new Error("O banco respondeu " + resposta.status);
+}
+function enviaFormulario(form, confirmacao, origem) {
+  const botao = form.querySelector('button[type="submit"]');
+  const aviso = document.createElement("p");
+  aviso.className = "form-erro";
+  aviso.setAttribute("role", "alert");
+  aviso.hidden = true;
+  form.appendChild(aviso);
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    form.hidden = true;
-    confirmacao.hidden = false;
-    confirmacao.focus();
+    const campos = Object.fromEntries(new FormData(form));
+    botao.disabled = true;
+    aviso.hidden = true;
+    try {
+      await gravaNoBanco("midia_kit_leads", {
+        nome: campos.nome, email: campos.email, whatsapp: campos.whatsapp || null, marca: campos.marca || null,
+        servico: campos.servico || null, prazo: campos.prazo || null, mensagem: campos.mensagem || null, origem, idioma
+      });
+      form.hidden = true;
+      confirmacao.hidden = false;
+      confirmacao.focus();
+    } catch (erro) {
+      aviso.textContent = t("Não foi possível enviar agora. Tente de novo ou fale com a gente pelo WhatsApp: (11) 99697-5223.");
+      aviso.hidden = false;
+    } finally {
+      botao.disabled = false;
+    }
   });
 }
-enviaFormulario($("form-contato"), $("confirmacao-contato"));
-enviaFormulario($("form-captura"), $("confirmacao-captura"));
+enviaFormulario($("form-contato"), $("confirmacao-contato"), "contato");
+enviaFormulario($("form-captura"), $("confirmacao-captura"), "captura");
 
 // Card de captura: abre depois de 7 segundos, uma vez por visita
 const captura = $("captura");
@@ -2007,14 +2045,68 @@ document.querySelectorAll(".seletor-idioma a").forEach((link) => {
     location.href = endereco.href;
   });
 });
-// Ao trocar de idioma, volta para o mesmo ponto da página
-try {
-  const rolagem = sessionStorage.getItem("idioma_rolagem");
-  if (rolagem !== null) {
-    sessionStorage.removeItem("idioma_rolagem");
-    window.scrollTo({ top: Number(rolagem), behavior: "auto" });
+
+// Vitrine de vídeos: vem do painel (Supabase). Se o banco não responder, usa as listas "nichos" e "destaques" deste arquivo.
+async function buscaVideosDoBanco() {
+  const aborta = new AbortController();
+  const limite = setTimeout(() => aborta.abort(), 4000);
+  try {
+    const resposta = await fetch(`${SUPABASE_URL}/rest/v1/midia_kit_videos?select=*&order=ordem.asc`, { headers: { apikey: SUPABASE_CHAVE }, signal: aborta.signal });
+    if (!resposta.ok) return;
+    const linhas = await resposta.json();
+    if (!linhas.length) return;
+    const tituloNoIdioma = (v) => (idioma === "en" && v.titulo_en) || (idioma === "es" && v.titulo_es) || v.titulo;
+    const nomes = [...nichos.map((n) => n.nome), ...linhas.map((v) => v.nicho).filter(Boolean)];
+    nichos = [...new Set(nomes)].map((nome) => ({
+      nome,
+      descricao: (nichos.find((n) => n.nome === nome) || {}).descricao || "",
+      videos: linhas.filter((v) => v.nicho === nome).map((v) => ({ marca: v.marca || "", titulo: tituloNoIdioma(v), detalhe: v.detalhe, link: v.link }))
+    })).filter((n) => n.videos.length);
+    destaques = linhas.filter((v) => v.destaque).map((v) => ({
+      titulo: v.destaque_titulo || tituloNoIdioma(v),
+      link: v.link, capa: "", numero: v.destaque_numero || "", rotulo: v.destaque_rotulo || ""
+    }));
+  } catch (erro) {
+    /* sem banco, a vitrine usa as listas deste arquivo */
+  } finally {
+    clearTimeout(limite);
   }
-} catch (erro) { /* tudo bem */ }
+}
+async function iniciaVitrine() {
+  await buscaVideosDoBanco();
+  montaVitrine();
+  if (idioma !== "pt") traduzPagina();
+  observaRevela();
+  // Ao trocar de idioma, volta para o mesmo ponto da página
+  try {
+    const rolagem = sessionStorage.getItem("idioma_rolagem");
+    if (rolagem !== null) {
+      sessionStorage.removeItem("idioma_rolagem");
+      window.scrollTo({ top: Number(rolagem), behavior: "auto" });
+    }
+  } catch (erro) { /* tudo bem */ }
+  // Link direto para uma seção (ex.: #trabalhos): a vitrine muda a altura da página, então ajusta a posição
+  const alvoDoLink = location.hash && document.getElementById(location.hash.slice(1));
+  if (alvoDoLink) alvoDoLink.scrollIntoView();
+}
+iniciaVitrine();
+
+// Conta uma visita por sessão, para o gráfico do painel (não conta quem está testando no computador)
+function registraVisita() {
+  if (location.protocol === "file:" || location.hostname === "localhost") return;
+  try {
+    if (sessionStorage.getItem("midiakit_visita")) return;
+    sessionStorage.setItem("midiakit_visita", "1");
+  } catch (erro) { return; }
+  let origem = "direto";
+  try {
+    const parametro = new URLSearchParams(location.search).get("utm_source");
+    if (parametro) origem = parametro;
+    else if (document.referrer && new URL(document.referrer).hostname !== location.hostname) origem = new URL(document.referrer).hostname.replace(/^www\./, "");
+  } catch (erro) { /* fica como direto */ }
+  gravaNoBanco("midia_kit_visitas", { pagina: location.pathname, origem }).catch(() => {});
+}
+registraVisita();
 </script>
 </body>
 </html>
