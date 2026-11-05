@@ -803,10 +803,11 @@
     <div class="container">
       <div class="destaques-layout">
         <div class="destaques-texto revela">
-          <span class="rotulo"><b>03</b>Destaques</span>
-          <h2 class="titulo-secao" id="titulo-destaques">Conteúdo de <span class="grifo">destaque</span></h2>
-          <p class="destaques-chamada">Toque no vídeo para assistir aqui mesmo.</p>
-          <p>Alguns dos vídeos que a gente criou para as marcas parceiras. Use as setas para ver os outros.</p>
+          <span class="rotulo"><b>03</b>Conteúdos de destaque</span>
+          <h2 class="titulo-secao" id="titulo-destaques">Experiências que viram <span class="grifo">histórias</span></h2>
+          <p>Conheça um pouco do nosso trabalho! Aqui reunimos alguns conteúdos que criamos em parceria com marcas, destinos, hotéis, restaurantes e experiências especiais.</p>
+          <p>Cada vídeo é uma oportunidade de transformar momentos reais em histórias que despertam curiosidade, conexão e vontade de viver também.</p>
+          <p class="destaques-chamada">Dê o play e venha conhecer nosso trabalho!</p>
         </div>
         <!-- Os cards vêm do array "destaques" no script: lá ficam o link do vídeo e a capa de cada um -->
         <div class="destaques-palco revela" id="destaques-palco" role="group" aria-label="Vídeos em destaque">
@@ -1093,9 +1094,12 @@ const traducoes = {
   "É essa essência que queremos compartilhar com nossos seguidores, ao lado de marcas especiais como a sua, despertando nas pessoas a vontade de conhecer, experimentar e viver coisas novas.": ["This is the essence we want to share with our followers, alongside special brands like yours, inspiring people to explore, try and live new things.", "Esta es la esencia que queremos compartir con nuestros seguidores, junto a marcas especiales como la tuya, despertando en las personas las ganas de conocer, probar y vivir cosas nuevas."],
 
   // Destaques
-  'Conteúdo de <span class="grifo">destaque</span>': ['Featured <span class="grifo">content</span>', 'Contenido <span class="grifo">destacado</span>'],
-  "Toque no vídeo para assistir aqui mesmo.": ["Tap the video to watch it right here.", "Toca el video para verlo aquí mismo."],
-  "Alguns dos vídeos que a gente criou para as marcas parceiras. Use as setas para ver os outros.": ["Some of the videos we created for our partner brands. Use the arrows to see the others.", "Algunos de los videos que creamos para las marcas aliadas. Usa las flechas para ver los demás."],
+  "Conteúdos de destaque": ["Featured content", "Contenidos destacados"],
+  'Experiências que viram <span class="grifo">histórias</span>': ['Experiences that become <span class="grifo">stories</span>', 'Experiencias que se vuelven <span class="grifo">historias</span>'],
+  "Conheça um pouco do nosso trabalho! Aqui reunimos alguns conteúdos que criamos em parceria com marcas, destinos, hotéis, restaurantes e experiências especiais.": ["Get to know a little of our work! Here we have gathered some of the content we created in partnership with brands, destinations, hotels, restaurants and special experiences.", "¡Conoce un poco de nuestro trabajo! Aquí reunimos algunos contenidos que creamos junto con marcas, destinos, hoteles, restaurantes y experiencias especiales."],
+  "Cada vídeo é uma oportunidade de transformar momentos reais em histórias que despertam curiosidade, conexão e vontade de viver também.": ["Each video is a chance to turn real moments into stories that spark curiosity, connection and the desire to live them too.", "Cada video es una oportunidad de transformar momentos reales en historias que despiertan curiosidad, conexión y ganas de vivirlas también."],
+  "Dê o play e venha conhecer nosso trabalho!": ["Press play and come see our work!", "¡Dale play y ven a conocer nuestro trabajo!"],
+  "Clique para ouvir": ["Click to hear it", "Haz clic para escuchar"],
   "Vídeos em destaque": ["Featured videos", "Videos destacados"],
   "Destaque anterior": ["Previous highlight", "Destacado anterior"],
   "Próximo destaque": ["Next highlight", "Siguiente destacado"],
@@ -1650,9 +1654,9 @@ function ligaPlayer(el) {
   capa.appendChild(aviso);
   el.appendChild(botao);
 
-  let iframe = null, janela = null, querTocar = false, pausado = false, mudo = false, tentouSom = false, legendasFora = false;
+  let iframe = null, janela = null, querTocar = false, pausado = false, mudo = false, querSom = false, tentouSom = false, legendasFora = false;
   let estado = -1, tempo = 0, duracao = 0;
-  let timerOuvir = null, timerSemSom = null, timerFalha = null, timerCarga = null;
+  let timerOuvir = null, timerSemSom = null, timerFalha = null, timerCarga = null, timerMouse = null;
 
   function enviar(func, args) {
     if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: args || [] }), ORIGEM_PLAYER);
@@ -1666,7 +1670,7 @@ function ligaPlayer(el) {
     if (janela) playersPorJanela.delete(janela);
     if (iframe) iframe.remove();
     iframe = janela = null;
-    querTocar = pausado = mudo = tentouSom = legendasFora = false;
+    querTocar = pausado = mudo = querSom = tentouSom = legendasFora = false;
     estado = -1; tempo = duracao = 0;
     capa.classList.remove("tocando", "carregando");
     aviso.textContent = "";
@@ -1674,12 +1678,18 @@ function ligaPlayer(el) {
   }
   function esperaFalha() {
     clearTimeout(timerFalha);
-    timerFalha = setTimeout(() => { para(); aviso.textContent = t("Não carregou. Toque para tentar de novo."); }, 15000);
+    timerFalha = setTimeout(() => {
+      const avisar = querSom;
+      para();
+      if (avisar) aviso.textContent = t("Não carregou. Toque para tentar de novo.");
+    }, 15000);
   }
-  function abre(comecaMudo) {
-    players.forEach((p) => p.para());
+  // comSom: a pessoa clicou. Sem som: só passou o mouse. Só um vídeo fica com som por vez e só um roda sem som por vez.
+  function abre(comecaMudo, comSom) {
+    players.forEach((p) => { if (p === api || comSom || !p.temSom()) p.para(); });
     querTocar = true;
     mudo = comecaMudo;
+    querSom = comSom;
     capa.classList.add("carregando");
     botao.setAttribute("aria-label", t("Pausar: ") + titulo);
     iframe = document.createElement("iframe");
@@ -1700,7 +1710,7 @@ function ligaPlayer(el) {
       // Se o navegador não deixar começar com som, recomeça sem som: o som é ligado assim que o vídeo começar a andar
       if (!comecaMudo) {
         timerSemSom = setTimeout(() => {
-          if (querTocar && estado !== 1 && estado !== 3) abre(true);
+          if (querTocar && estado !== 1 && estado !== 3) abre(true, querSom);
         }, 2500);
       }
     });
@@ -1725,14 +1735,38 @@ function ligaPlayer(el) {
     botao.setAttribute("aria-label", t("Pausar: ") + titulo);
   }
   botao.addEventListener("click", () => {
-    if (!iframe) { aviso.textContent = ""; abre(!temMouse); }
-    else if (pausado) continua();
-    else if (mudo) { mudo = false; enviar("unMute"); enviar("setVolume", [100]); enviar("playVideo"); aviso.textContent = ""; }
+    clearTimeout(timerMouse);
+    if (!iframe) { aviso.textContent = ""; abre(!temMouse, true); }
+    else if (pausado) { players.forEach((p) => { if (p !== api) p.para(); }); continua(); }
+    else if (mudo) {
+      // Estava rodando sem som (mouse em cima): liga o som e para os outros vídeos
+      players.forEach((p) => { if (p !== api) p.para(); });
+      querSom = tentouSom = true;
+      mudo = false;
+      enviar("unMute");
+      enviar("setVolume", [100]);
+      enviar("playVideo");
+      aviso.textContent = "";
+    }
     else pausa();
   });
 
+  // Com mouse: passar por cima roda sem som e sair de cima para, a não ser que a pessoa tenha clicado para ouvir
+  if (temMouse && !reduzMovimento) {
+    el.addEventListener("mouseenter", () => {
+      if (el.classList.contains("destaque") && !el.classList.contains("ativo")) return;
+      clearTimeout(timerMouse);
+      timerMouse = setTimeout(() => { if (!iframe) abre(true, false); }, 180);
+    });
+    el.addEventListener("mouseleave", () => {
+      clearTimeout(timerMouse);
+      if (iframe && !querSom && !pausado) para();
+    });
+  }
+
   const api = {
     para,
+    temSom: () => querSom && !pausado,
     estaRodando: () => querTocar,
     pausa,
     recebe(dados) {
@@ -1767,13 +1801,13 @@ function ligaPlayer(el) {
         clearTimeout(timerFalha);
         capa.classList.add("tocando");
         capa.classList.remove("carregando");
-        if (mudo && !tentouSom) {
+        if (mudo && querSom && !tentouSom) {
           tentouSom = true;
           enviar("unMute");
           enviar("setVolume", [100]);
         }
         if (tentouSom && info.muted === false) mudo = false;
-        aviso.textContent = mudo ? t("Toque para ligar o som") : "";
+        aviso.textContent = !mudo ? "" : t(querSom ? "Toque para ligar o som" : "Clique para ouvir");
       }
       // Alguns celulares pausam o vídeo quando o som é ligado sem um toque: volta a rodar sem som e o aviso pede o toque
       if (querTocar && estado === 2 && tentouSom) {
