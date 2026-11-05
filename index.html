@@ -515,7 +515,8 @@
   #contato .campo textarea:focus::placeholder { color: var(--texto-suave); }
   #contato .botao { background: var(--branco); color: var(--tinta); }
   #contato .botao:hover { background: var(--sand); }
-  #contato .confirmacao { color: var(--tinta); }
+  .confirmacao-simples { margin: 16px 0 0; padding: 14px 18px; border-radius: 12px; background: rgba(255, 255, 255, .16); color: var(--branco); font-weight: 700; line-height: 1.45; }
+  .confirmacao-simples[hidden] { display: none; }
 
   .formulario { display: grid; gap: 16px; align-content: start; }
   .formulario[hidden] { display: none; }
@@ -942,13 +943,7 @@
             </div>
             <button class="botao botao-terra" type="submit">Enviar mensagem</button>
           </form>
-          <div class="confirmacao" id="confirmacao-contato" role="status" tabindex="-1" hidden>
-            <span class="ok" aria-hidden="true">✓</span>
-            <div>
-              <b>Mensagem recebida!</b>
-              <p>Obrigada por chamar a gente. A resposta chega no seu e-mail em breve. Se for urgente, fala com a gente no WhatsApp.</p>
-            </div>
-          </div>
+          <p class="confirmacao-simples" id="confirmacao-contato" role="status" tabindex="-1" hidden>Mensagem enviada, assim que possível, te retorno por e-mail ou WhatsApp.</p>
         </div>
       </div>
     </div>
@@ -1208,9 +1203,8 @@ const traducoes = {
   "Conta sobre o projeto": ["Tell us about the project", "Cuéntanos sobre el proyecto"],
   "Produto, onde o vídeo vai rodar (orgânico, anúncio, site) e qualquer referência que você goste...": ["Product, where the video will run (organic, ads, website) and any reference you like...", "Producto, dónde se usará el video (orgánico, anuncio, sitio web) y cualquier referencia que te guste..."],
   "Enviar mensagem": ["Send message", "Enviar mensaje"],
-  "Mensagem recebida!": ["Message received!", "¡Mensaje recibido!"],
   "Não foi possível enviar agora. Tente de novo ou fale com a gente pelo WhatsApp: (11) 99697-5223.": ["We could not send it right now. Try again or talk to us on WhatsApp: +55 11 99697-5223.", "No se pudo enviar ahora. Inténtalo de nuevo o háblanos por WhatsApp: +55 11 99697-5223."],
-  "Obrigada por chamar a gente. A resposta chega no seu e-mail em breve. Se for urgente, fala com a gente no WhatsApp.": ["Thank you for reaching out. Our reply will reach your email soon. If it is urgent, talk to us on WhatsApp.", "Gracias por escribirnos. La respuesta llegará pronto a tu correo. Si es urgente, háblanos por WhatsApp."],
+  "Mensagem enviada, assim que possível, te retorno por e-mail ou WhatsApp.": ["Message sent, I will get back to you by email or WhatsApp as soon as possible.", "Mensaje enviado, en cuanto sea posible te respondo por correo o WhatsApp."],
   "E-mail": ["Email", "Correo"],
 
   // Rodapé e card de captura
@@ -1959,12 +1953,14 @@ function enviaFormulario(form, confirmacao, origem) {
     const campos = Object.fromEntries(new FormData(form));
     botao.disabled = true;
     aviso.hidden = true;
+    confirmacao.hidden = true;
     try {
       await gravaNoBanco("midia_kit_leads", {
         nome: campos.nome, email: campos.email, whatsapp: campos.whatsapp || null, marca: campos.marca || null,
         servico: campos.servico || null, prazo: campos.prazo || null, mensagem: campos.mensagem || null, origem, idioma
       });
-      form.hidden = true;
+      if (origem === "contato") form.reset();
+      else form.hidden = true;
       confirmacao.hidden = false;
       confirmacao.focus();
     } catch (erro) {
