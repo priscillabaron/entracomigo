@@ -1654,7 +1654,7 @@ function ligaPlayer(el) {
   capa.appendChild(aviso);
   el.appendChild(botao);
 
-  let iframe = null, janela = null, querTocar = false, pausado = false, mudo = false, querSom = false, tentouSom = false, legendasFora = false;
+  let iframe = null, janela = null, querTocar = false, pausado = false, mudo = false, querSom = false, tentouSom = false, legendasFora = false, retomando = false;
   let estado = -1, tempo = 0, duracao = 0;
   let timerOuvir = null, timerSemSom = null, timerFalha = null, timerCarga = null, timerMouse = null;
   let mudoNoPlayer = null, volumeNoPlayer = null, timersSom = [];
@@ -1667,10 +1667,11 @@ function ligaPlayer(el) {
     timersSom.forEach(clearTimeout);
     timersSom = [0, 300, 800, 1500, 2500, 4000].map((espera) => setTimeout(() => {
       if (!iframe || !querSom || pausado) return;
+      // Só pede para tocar se o vídeo não estiver andando: repetir o pedido faz o YouTube desenhar o símbolo de play por cima do vídeo
       if (mudoNoPlayer !== false || volumeNoPlayer === 0) {
         enviar("unMute");
-        enviar("setVolume", [100]);
-        enviar("playVideo");
+        if (volumeNoPlayer !== 100) enviar("setVolume", [100]);
+        if (estado !== 1 && estado !== 3) enviar("playVideo");
       }
       if (espera === 4000 && mudoNoPlayer === true) {
         mudo = true;
@@ -1689,7 +1690,7 @@ function ligaPlayer(el) {
     if (janela) playersPorJanela.delete(janela);
     if (iframe) iframe.remove();
     iframe = janela = null;
-    querTocar = pausado = mudo = querSom = tentouSom = legendasFora = false;
+    querTocar = pausado = mudo = querSom = tentouSom = legendasFora = retomando = false;
     estado = -1; tempo = duracao = 0;
     mudoNoPlayer = volumeNoPlayer = null;
     capa.classList.remove("tocando", "carregando");
@@ -1749,6 +1750,7 @@ function ligaPlayer(el) {
   function continua() {
     querTocar = true;
     pausado = false;
+    retomando = true;
     capa.classList.add("carregando");
     enviar("playVideo");
     esperaFalha();
@@ -1830,7 +1832,9 @@ function ligaPlayer(el) {
         aviso.textContent = !mudo ? "" : t(querSom ? "Toque para ligar o som" : "Clique para ouvir");
       }
       // Alguns celulares pausam o vídeo quando o som é ligado sem um toque: volta a rodar sem som e o aviso pede o toque
-      if (querTocar && estado === 2 && tentouSom) {
+      // (quem acabou de clicar para continuar um vídeo pausado não entra nesse caso: o vídeo ainda consta como pausado por um instante)
+      if (estado === 1) retomando = false;
+      if (querTocar && estado === 2 && tentouSom && !retomando) {
         mudo = true;
         enviar("mute");
         enviar("playVideo");
